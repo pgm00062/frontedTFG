@@ -1,0 +1,31 @@
+import manageRequest from '@/domain/manageRequest';
+
+const userUseCases = {
+  login: (signal, values, token) => {
+    return manageRequest(
+      signal,
+      'login',
+      values,
+      'body',
+      'normal',
+      'post',
+      token,
+      undefined,
+    );
+  },
+
+  register: (signal, values, token) => {
+    return manageRequest(
+      signal,
+      'register',
+      values,
+      'body',
+      'normal',
+      'post',
+      token,
+      undefined,
+    );
+  },
+};
+
+export default userUseCases;
