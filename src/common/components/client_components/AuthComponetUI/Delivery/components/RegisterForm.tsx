@@ -1,22 +1,9 @@
 'use client'
-
-import { useState } from 'react'
-import { Form, Input, Button, Card, Typography, Alert, Space } from 'antd'
+import { Form, Input, Button, Card, Typography, Alert } from 'antd'
 import { UserOutlined, LockOutlined, MailOutlined, IdcardOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons'
+import type { RegisterFormProps } from '../interface'
 
 const { Title } = Typography
-
-interface RegisterFormProps {
-  onSubmit: (data: {
-    name: string
-    surname: string
-    email: string
-    dni: string
-    password: string
-  }) => void
-  isLoading?: boolean
-  error?: string
-}
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading = false, error }) => {
   const [form] = Form.useForm()
@@ -32,14 +19,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading = false
   }
 
   return (
-    <Card 
-      style={{ 
-        width: 400, 
-        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-        borderRadius: '12px'
-      }}
-      bodyStyle={{ padding: '32px' }}
-    >
+    <Card className="auth-card">
       <div style={{ textAlign: 'center', marginBottom: '32px' }}>
         <Title level={2} style={{ margin: 0, color: '#52c41a' }}>
           Registrarse
@@ -154,30 +134,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading = false
           />
         </Form.Item>
 
-        {error && (
-          <Alert
-            message={error}
-            type="error"
-            showIcon
-            style={{ marginBottom: '16px', borderRadius: '8px' }}
-          />
-        )}
+        {error && (<Alert message={error} type="error" showIcon className="alert-spaced" />)}
 
         <Form.Item style={{ marginBottom: 0 }}>
-          <Button
-            type="primary"
-            htmlType="submit"
-            loading={isLoading}
-            style={{
-              width: '100%',
-              height: '48px',
-              borderRadius: '8px',
-              fontSize: '16px',
-              fontWeight: '500',
-              backgroundColor: '#52c41a',
-              borderColor: '#52c41a'
-            }}
-          >
+          <Button type="primary" htmlType="submit" loading={isLoading} className="btn-full-lg btn-success">
             {isLoading ? 'Registrando...' : 'Registrarse'}
           </Button>
         </Form.Item>
@@ -185,5 +145,4 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading = false
     </Card>
   )
 }
-
 export default RegisterForm

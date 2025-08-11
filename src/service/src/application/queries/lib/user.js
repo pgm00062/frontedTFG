@@ -26,6 +26,33 @@ const userUseCases = {
       undefined,
     );
   },
-};
+  
+  getUser: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'getUser',
+      values,
+      'query',
+      'normal',
+      'get',
+      token,
+      undefined,
+      headers,
+    );
+  },
 
+  updateUser: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'updateUser',
+      values,
+      'body',
+      'normal',
+      'put',
+      token,
+      undefined,
+      headers,
+    );
+  },
+};
 export default userUseCases;

@@ -1,4 +1,4 @@
-import { METHODS, QUERIES } from './lib/index';
+import { METHODS, QUERIES, ERROR_MESSAGES } from './lib/index';
 
 const METHODS_WITH_BODY = ['put', 'post', 'patch'];
 
@@ -37,12 +37,19 @@ const manageRequest = async (
       cache,
       headers: {
         'Content-Type': 'application/json',
-        ...(token ? {
-          Authorization: token,
-          Tokenid: token,
-        } : {}),
+        ...(token
+          ? (() => {
+              const headerToken = token.startsWith('Bearer ')
+                ? token
+                : `Bearer ${token}`;
+              return {
+                Authorization: headerToken,
+              };
+            })()
+          : {}),
         ...headers,
       },
+      credentials: 'include',
     };
 
     let url = QUERIES[requestString](params);
@@ -58,7 +65,9 @@ const manageRequest = async (
         url += `?${dataForSend}`;
       }
     } else if (mode === 'url') {
-      url += Object.values(params).map((v) => '/' + encodeURIComponent(v));
+      url += Object.values(params)
+        .map((v) => '/' + encodeURIComponent(v))
+        .join('');
     } else if (
       METHODS_WITH_BODY.includes(method.toLowerCase()) ||
       mode === 'body'
@@ -66,29 +75,62 @@ const manageRequest = async (
       fetchConfig['body'] = commonBody ? JSON.stringify(params) : params;
     }
     const response = await fetch(url, fetchConfig);
-    const responseBody = await response.text();
 
     if (!response.ok) {
       console.error('[FETCH_ERROR]', response);
+      let errorBody = null;
+      try {
+        const errorText = await response.clone().text();
+        try {
+          errorBody = errorText ? JSON.parse(errorText) : null;
+        } catch (_) {
+          errorBody = errorText || null;
+        }
+      } catch (_) {
+        // ignore body parse error
+      }
+
+      const defaultMessage = ERROR_MESSAGES?.[requestString] || response.statusText || 'Unexpected error';
+
       throw {
         params,
         query: requestString,
         status: response.status,
         statusText: response.statusText,
-        body: responseBody && responseType === 'string'
-        ? responseBody
-        : JSON.parse(responseBody),
+        message: defaultMessage,
+        body: errorBody,
       };
     }
 
-    if (response.status === 204 || !responseBody) {
+    if (response.status === 204) {
       return METHODS[requestString](
         { data: null, config: { url, ...fetchConfig } },
         requestString,
       );
     }
 
-    const responseData = responseType === 'string' ? responseBody : JSON.parse(responseBody);
+    const normalizedType = responseType === 'normal' ? 'json' : responseType;
+    let responseData = null;
+    if (normalizedType === 'json') {
+      try {
+        responseData = await response.json();
+      } catch (_) {
+        responseData = null;
+      }
+    } else if (normalizedType === 'string' || normalizedType === 'text') {
+      responseData = await response.text();
+    } else if (normalizedType === 'blob') {
+      responseData = await response.blob();
+    } else if (normalizedType === 'arrayBuffer') {
+      responseData = await response.arrayBuffer();
+    } else {
+      // fallback a json -> text
+      try {
+        responseData = await response.json();
+      } catch (_) {
+        responseData = await response.text();
+      }
+    }
 
     return METHODS[requestString](
       { data: responseData, config: { url, ...fetchConfig } },

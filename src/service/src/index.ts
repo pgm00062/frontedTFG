@@ -16,8 +16,8 @@ const Service = {
   getCases: (useCaseName: string, parameters: Utility.JSONValue) =>
     new Promise((resolve, reject) => {
       try {
-        const { signal, endPointData, token } = parameters;
-        useCasesJson[useCaseName](signal, endPointData, token)
+        const { signal, endPointData, token, headers } = parameters as any;
+        useCasesJson[useCaseName](signal, endPointData, token, headers)
           .then((response: unknown) => resolve(response))
           .catch((error: unknown) => {
             reject(error);
