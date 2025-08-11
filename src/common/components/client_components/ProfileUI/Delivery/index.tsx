@@ -1,41 +1,74 @@
 'use client'
 import type { ProfileClientProps } from './interface'
+import { Card } from 'antd'
+import FieldRow from './components/FieldRow'
+import { IdcardOutlined, UserOutlined, MailOutlined, NumberOutlined } from '@ant-design/icons'
+import { useState } from 'react'
+import ProfileEditorContainer from '../infrastructure/ProfileEditorContainer'
 
 export default function ProfileClient({ initialData, errorMessage }: ProfileClientProps) {
-  if (errorMessage) {
-    return (
-      <main style={{ padding: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Error</h1>
-        <p>{errorMessage}</p>
-      </main>
-    )
-  }
+  const [editing, setEditing] = useState(false)
+  const [formData, setFormData] = useState(() => initialData || null)
 
-  if (!initialData) {
-    return (
-      <main style={{ padding: '2rem' }}>
-        <h1 style={{ fontSize: '1.5rem', fontWeight: 600 }}>Cargando...</h1>
-      </main>
-    )
+  const handleChange = (name: string, value: string) => {
+    setFormData((prev: any) => (prev ? { ...prev, [name]: value } : prev))
   }
+  if (errorMessage) return (
+    <main className="profile-page">
+      <div className="profile-wrapper">
+        <Card className="profile-card">
+          <h1 className="profile-title">Error</h1>
+          <p>{errorMessage}</p>
+        </Card>
+      </div>
+    </main>
+  )
+
+  if (!initialData) return (
+    <main className="profile-page">
+      <div className="profile-wrapper">
+        <Card className="profile-card">
+          <h1 className="profile-title">Cargando...</h1>
+        </Card>
+      </div>
+    </main>
+  )
 
   return (
-    <main style={{ padding: '2rem', maxWidth: 720, margin: '0 auto' }}>
-      <h1 style={{ fontSize: '1.75rem', fontWeight: 700, marginBottom: '1rem' }}>Datos personales</h1>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', rowGap: 8, columnGap: 12 }}>
-        <span style={{ fontWeight: 600 }}>ID</span>
-        <span>{initialData.id}</span>
-        <span style={{ fontWeight: 600 }}>Nombre</span>
-        <span>{initialData.name}</span>
-        <span style={{ fontWeight: 600 }}>Apellido</span>
-        <span>{initialData.surname}</span>
-        <span style={{ fontWeight: 600 }}>Email</span>
-        <span>{initialData.email}</span>
-        <span style={{ fontWeight: 600 }}>DNI</span>
-        <span>{initialData.dni}</span>
+    <main className="profile-page">
+      <div className="profile-wrapper">
+        <div className="profile-hero">
+          <div className="profile-hero-left">
+            <div className="profile-avatar">
+              {initialData.name?.[0] ?? 'U'}
+            </div>
+            <div>
+              <h2 className="profile-name">{initialData.name} {initialData.surname}</h2>
+              <p className="profile-email">{initialData.email}</p>
+            </div>
+          </div>
+          <div className="profile-actions">
+          </div>
+        </div>
+
+        {!editing ? (
+          <Card className="profile-card">
+            <h1 className="profile-title">Información de cuenta</h1>
+            <div className="profile-rows">
+              <FieldRow label="ID" value={initialData.id} icon={<NumberOutlined />} />
+              <FieldRow label="Nombre" value={initialData.name} icon={<UserOutlined />} />
+              <FieldRow label="Apellido" value={initialData.surname} icon={<UserOutlined />} />
+              <FieldRow label="Email" value={initialData.email} icon={<MailOutlined />} />
+              <FieldRow label="DNI" value={initialData.dni} icon={<IdcardOutlined />} />
+            </div>
+            <div className="profile-actions-bottom">
+              <button className="btn-full-lg" onClick={() => setEditing(true)}>Editar</button>
+            </div>
+          </Card>
+        ) : (
+          <ProfileEditorContainer initialData={initialData as any} onSaved={() => setEditing(false)} />
+        )}
       </div>
     </main>
   )
 }
-
-

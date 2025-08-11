@@ -6,35 +6,17 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     console.log('body', body)
-    /*
-    const backendRes = await fetch('http://localhost:8080/users/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    })
-      */
-
-    const backendRes:any = await Service.getCases('login', {
+    const backendRes: any = await Service.getCases('login', {
       signal: abort.signal,
       endPointData: body,
       token: undefined,
-      headers: { 'Content-Type': 'application/json' },
     })
 
-    const text = await backendRes.text()
-    let data: unknown = null
-    try {
-      data = text ? JSON.parse(text) : null
-    } catch {
-      data = text
-    }
+    // El método de dominio retorna { data, headers }
+    const data = backendRes?.data ?? backendRes
 
-    if (!backendRes.ok) {
-      return NextResponse.json({ error: true, body: data }, { status: backendRes.status })
-    }
-
-    // Propagar sesión del backend guardando el JSESSIONID en cookie propia
-    const setCookie = backendRes.headers.get('set-cookie') || ''
+    // Propagar sesión del backend guardando el JSESSIONID en cookie propia si existiera
+    const setCookie = backendRes?.headers?.get?.('set-cookie') || ''
     const jsessionMatch = setCookie.match(/JSESSIONID=([^;]+)/)
     const jsessionId = jsessionMatch ? jsessionMatch[1] : null
 

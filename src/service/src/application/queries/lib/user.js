@@ -32,7 +32,7 @@ const userUseCases = {
       signal,
       'getUser',
       values,
-      'query',
+      'normal',
       'normal',
       'get',
       token,

@@ -104,7 +104,7 @@ const manageRequest = async (
 
     if (response.status === 204) {
       return METHODS[requestString](
-        { data: null, config: { url, ...fetchConfig } },
+        { data: null, config: { url, ...fetchConfig }, headers: response.headers },
         requestString,
       );
     }
@@ -133,7 +133,7 @@ const manageRequest = async (
     }
 
     return METHODS[requestString](
-      { data: responseData, config: { url, ...fetchConfig } },
+      { data: responseData, config: { url, ...fetchConfig }, headers: response.headers },
       requestString,
     );
   } catch (error) {

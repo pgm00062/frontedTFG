@@ -1,6 +1,7 @@
 export const USER_METHODS = {
   login: (response) => {
-    return response.data;
+    // Exponer headers para que una API Route pueda leer Set-Cookie si fuera necesario
+    return { data: response.data, headers: response.headers };
   },
   
   register: (response) => {
