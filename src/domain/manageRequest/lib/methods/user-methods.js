@@ -15,4 +15,8 @@ export const USER_METHODS = {
   updateUser: (response) => {
     return response.data;
   },
+
+  changePassword: (response) => {
+    return response.data;
+  },
 };

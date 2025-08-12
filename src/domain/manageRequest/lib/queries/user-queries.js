@@ -7,6 +7,8 @@ export const USER_QUERIES = {
     `http://localhost:8080/users/me`,
   updateUser: () =>
     `http://localhost:8080/users/update`,
+  changePassword: () =>
+    `http://localhost:8080/users/me/password`
 };
 
 export const USER_ERROR_MESSAGES = {
@@ -14,4 +16,5 @@ export const USER_ERROR_MESSAGES = {
   register: 'Error en el registro',
   getUser: 'Error al obtener el usuario',
   updateUser: 'Error al actualizar el usuario',
+  changePassword: 'Error al cambiar la contraseña del usuario'
 };

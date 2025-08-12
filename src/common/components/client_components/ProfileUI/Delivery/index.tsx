@@ -5,6 +5,7 @@ import FieldRow from './components/FieldRow'
 import { IdcardOutlined, UserOutlined, MailOutlined, NumberOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import ProfileEditorContainer from '../infrastructure/ProfileEditorContainer'
+import PasswordCard from './components/PasswordCard'
 
 export default function ProfileClient({ initialData, errorMessage }: ProfileClientProps) {
   const [editing, setEditing] = useState(false)
@@ -68,6 +69,8 @@ export default function ProfileClient({ initialData, errorMessage }: ProfileClie
         ) : (
           <ProfileEditorContainer initialData={initialData as any} onSaved={() => setEditing(false)} />
         )}
+
+        <PasswordCard />
       </div>
     </main>
   )

@@ -54,5 +54,20 @@ const userUseCases = {
       headers,
     );
   },
+
+  changePassword: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'changePassword',
+      values,
+      'body',
+      'normal',
+      'put',
+      token,
+      undefined,
+      headers,
+    );
+  },
+  
 };
 export default userUseCases;
