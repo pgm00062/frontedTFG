@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
-import Sidebar from '../Delivery'
-import ToggleButton from '../Delivery/components/ToggleButton'
+import Sidebar from '..'
+import ToggleButton from './ToggleButton'
 
 export default function SidebarContainer() {
   const [open, setOpen] = useState(false)
@@ -12,5 +12,3 @@ export default function SidebarContainer() {
     </>
   )
 }
-
-

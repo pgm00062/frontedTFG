@@ -26,3 +26,8 @@ interface FieldRowProps {
   value: string | number | null | undefined
   icon?: React.ReactNode
 }
+
+export interface ProfileEditorContainerProps {
+  initialData: UserProfile
+  onSaved?: (updated: UserProfile) => void
+}

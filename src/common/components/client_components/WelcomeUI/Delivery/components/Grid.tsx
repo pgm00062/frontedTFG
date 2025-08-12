@@ -1,16 +1,13 @@
 'use client'
 import React from 'react'
 import { UserOutlined, ProjectOutlined, BarChartOutlined, FieldTimeOutlined, CompressOutlined, ExpandOutlined } from '@ant-design/icons'
+import ProfileMiniPreview from './ProfileMiniPreview'
+import type { GridProps } from '../interface'
 
-interface GridProps {
-  full?: boolean
-}
-
-export default function WelcomeGrid({ full = true }: GridProps) {
+export default function WelcomeGrid({ full = true, userPreview }: GridProps) {
   if (full) {
-    return <GridFull />
+    return <GridFull userPreview={userPreview} />;
   }
-
   return (
     <section className="welcome-grid">
       <article className="welcome-card"><h3 style={{ margin: 0, fontWeight: 700 }}>Perfil</h3></article>
@@ -18,10 +15,10 @@ export default function WelcomeGrid({ full = true }: GridProps) {
       <article className="welcome-card"><h3 style={{ margin: 0, fontWeight: 700 }}>Estadisticas</h3></article>
       <article className="welcome-card"><h3 style={{ margin: 0, fontWeight: 700 }}>Ajustes</h3></article>
     </section>
-  )
+  );
 }
 
-function GridFull() {
+function GridFull({ userPreview }: { userPreview?: { name: string; surname: string } }) {
   const [expanded, setExpanded] = React.useState<number | null>(null)
 
   const toggle = (i: number) => setExpanded((prev) => (prev === i ? null : i))
@@ -36,6 +33,7 @@ function GridFull() {
         onToggle={() => toggle(0)}
         expanded={expanded === 0}
         href="/profile"
+        userPreview={userPreview}
       />
       <CardFull
         index={1}
@@ -65,13 +63,27 @@ function GridFull() {
   )
 }
 
-function CardFull({ index, className, title, icon, onToggle, expanded, href }: { index: number; className?: string; title: string; icon: React.ReactNode; onToggle: () => void; expanded: boolean; href?: string }) {
+function CardFull({ index, className, title, icon, onToggle, expanded, href, userPreview }: { index: number; className?: string; title: string; icon: React.ReactNode; onToggle: () => void; expanded: boolean; href?: string; userPreview?: { name: string; surname: string } }) {
   return (
-    <article className={`welcome-card-full ${className || ''}`} style={{ borderRadius: 16 }} onClick={onToggle}>
+    <div
+      className={`welcome-card-full ${className || ''}`}
+      style={{ borderRadius: 16 }}
+      role="button"
+      tabIndex={0}
+      onClick={onToggle}
+      onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { onToggle(); } }}
+      aria-pressed={expanded}
+    >
       <div className="welcome-card-top">
         {icon}
         <h3 className="welcome-card-title-top">{title}</h3>
       </div>
+      {/* Previsualización del perfil solo en la tarjeta de perfil */}
+      {userPreview && (
+        <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <ProfileMiniPreview user={userPreview} />
+        </div>
+      )}
       {href ? (
         <a href={href} className="welcome-card-link" aria-label={title} />
       ) : (
@@ -80,6 +92,6 @@ function CardFull({ index, className, title, icon, onToggle, expanded, href }: {
       <div style={{ position: 'absolute', top: 16, right: 16, color: '#111827' }}>
         {expanded ? <CompressOutlined /> : <ExpandOutlined />}
       </div>
-    </article>
+    </div>
   )
 }

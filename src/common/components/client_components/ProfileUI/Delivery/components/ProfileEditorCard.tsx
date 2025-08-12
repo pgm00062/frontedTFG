@@ -1,9 +1,9 @@
-'use client'
-
 import { useState } from 'react'
-import EditableFieldRow from '../Delivery/components/EditableFieldRow'
+import EditableFieldRow from './EditableFieldRow'
 import { IdcardOutlined, UserOutlined, MailOutlined } from '@ant-design/icons'
 import { Card, message, Spin } from 'antd'
+import { updateUserProfile } from '../../infrastructure/UpdateUserOperation'
+import type { ProfileEditorContainerProps } from '../interface'
 
 type UserProfile = {
   id: number
@@ -13,12 +13,7 @@ type UserProfile = {
   dni: string
 }
 
-interface ProfileEditorContainerProps {
-  initialData: UserProfile
-  onSaved?: (updated: UserProfile) => void
-}
-
-export default function ProfileEditorContainer({ initialData, onSaved }: ProfileEditorContainerProps) {
+export default function ProfileEditorCard({ initialData, onSaved }: ProfileEditorContainerProps) {
   const [data, setData] = useState<UserProfile>(initialData)
   const [saving, setSaving] = useState(false)
 
@@ -29,18 +24,12 @@ export default function ProfileEditorContainer({ initialData, onSaved }: Profile
   const handleSave = async () => {
     try {
       setSaving(true)
-      const res = await fetch('/api/user/update', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: data.name,
-          surname: data.surname,
-          email: data.email,
-          dni: data.dni,
-        }),
+      await updateUserProfile({
+        name: data.name,
+        surname: data.surname,
+        email: data.email,
+        dni: data.dni,
       })
-      const json = await res.json()
-      if (!res.ok || !json?.ok) throw new Error(json?.message || 'No se pudo guardar')
       message.success('Datos actualizados correctamente')
       onSaved?.(data)
     } catch (e: any) {
@@ -71,5 +60,3 @@ export default function ProfileEditorContainer({ initialData, onSaved }: Profile
     </Card>
   )
 }
-
-

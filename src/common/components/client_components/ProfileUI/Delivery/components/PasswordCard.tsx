@@ -1,8 +1,8 @@
 'use client'
-
 import { Card, Input, Button, message } from 'antd'
 import { LockOutlined } from '@ant-design/icons'
 import { useState } from 'react'
+import { handleChange } from '../../infrastructure/ChangePasswordOperation'
 
 export default function PasswordCard() {
   const [changing, setChanging] = useState(false)
@@ -10,29 +10,15 @@ export default function PasswordCard() {
   const [newPassword, setNewPassword] = useState('')
   const [show, setShow] = useState(false)
 
-  const handleChange = async () => {
-    if (!oldPassword || !newPassword) {
-      return message.warning('Introduce la contraseña antigua y la nueva')
-    }
-    try {
-      setChanging(true)
-      const res = await fetch('/api/user/change-password', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ oldPassword, newPassword }),
-      })
-      const json = await res.json()
-      if (!res.ok || !json?.ok) throw new Error(json?.message || 'No se pudo cambiar la contraseña')
-      message.success('Contraseña actualizada correctamente')
-      setOldPassword('')
-      setNewPassword('')
-      setShow(false)
-    } catch (e: any) {
-      message.error(e?.message || 'Error al cambiar la contraseña')
-    } finally {
-      setChanging(false)
-    }
-  }
+  const onChangePassword = () =>
+    handleChange({
+      oldPassword,
+      newPassword,
+      setChanging,
+      setOldPassword,
+      setNewPassword,
+      setShow,
+    })
 
   return (
     <Card className="profile-card">
@@ -79,7 +65,7 @@ export default function PasswordCard() {
           </div>
           <div className="profile-actions-bottom">
             <Button onClick={() => setShow(false)} disabled={changing}>Cancelar</Button>
-            <Button type="primary" className="btn-success" onClick={handleChange} loading={changing}>
+            <Button type="primary" className="btn-success" onClick={onChangePassword} loading={changing}>
               Guardar
             </Button>
           </div>
