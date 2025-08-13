@@ -1,7 +1,17 @@
 'use client'
 import { SidebarProps } from './interface'
+import { handleLogout } from '../infrastructure/LogoutOperation'
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  
+  const onLogout = async () => {
+    const confirmed = window.confirm('¿Estás seguro de que quieres cerrar sesión?')
+    
+    if (confirmed) {
+      await handleLogout()
+    }
+  }
+
   return (
     <>
       <div
@@ -23,6 +33,12 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           <li className="sidebar-item"><a href="#" className="sidebar-link">Estadísticas</a></li>
           <li className="sidebar-item"><a href="#" className="sidebar-link">Ajustes</a></li>
         </ul>
+        
+        <div className="sidebar-footer">
+          <button onClick={onLogout} className="sidebar-logout-btn">
+            Cerrar sesión
+          </button>
+        </div>
       </aside>
     </>
   )

@@ -19,4 +19,8 @@ export const USER_METHODS = {
   changePassword: (response) => {
     return response.data;
   },
+
+  logout: (response) => {
+    return response.data;
+  },
 };

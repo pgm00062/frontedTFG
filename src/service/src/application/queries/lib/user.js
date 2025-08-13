@@ -68,6 +68,19 @@ const userUseCases = {
       headers,
     );
   },
-  
+
+  logout: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'logout',
+      values,
+      'normal',
+      'normal',
+      'post',
+      token,
+      undefined,
+      headers,
+    );
+  },
 };
 export default userUseCases;

@@ -244,6 +244,33 @@ body {
   z-index: 1100;
 }
 
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid #f0f2f5;
+}
+
+.sidebar-logout-btn {
+  width: 100%;
+  padding: 12px 16px;
+  background: #ff4d4f;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar-logout-btn:hover {
+  background: #ff7875;
+}
+
+.sidebar-logout-btn:active {
+  background: #d9363e;
+}
+
 /* Auth styles */
 .auth-page {
   min-height: 100vh;
