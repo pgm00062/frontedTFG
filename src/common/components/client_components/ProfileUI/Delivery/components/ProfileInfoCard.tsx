@@ -1,17 +1,7 @@
 import { Card } from 'antd'
 import { IdcardOutlined, UserOutlined, MailOutlined, NumberOutlined } from '@ant-design/icons'
 import FieldRow from './FieldRow'
-
-interface ProfileInfoCardProps {
-  data: {
-    id: number
-    name: string
-    surname: string
-    email: string
-    dni: string
-  }
-  onEdit: () => void
-}
+import type {ProfileInfoCardProps} from '../interface'
 
 export default function ProfileInfoCard({ data, onEdit }: ProfileInfoCardProps) {
   return (

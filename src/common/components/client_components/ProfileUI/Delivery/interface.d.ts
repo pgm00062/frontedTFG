@@ -31,3 +31,14 @@ export interface ProfileEditorContainerProps {
   initialData: UserProfile
   onSaved?: (updated: UserProfile) => void
 }
+
+export interface ProfileInfoCardProps {
+  data: {
+    id: number
+    name: string
+    surname: string
+    email: string
+    dni: string
+  }
+  onEdit: () => void
+}
