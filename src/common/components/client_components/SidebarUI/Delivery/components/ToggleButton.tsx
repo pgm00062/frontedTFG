@@ -2,9 +2,17 @@
 import { MenuOutlined } from '@ant-design/icons'
 import { ToggleButtonProps } from '../interface'
 
-export default function ToggleButton({ onClick }: ToggleButtonProps) {
+interface Props extends ToggleButtonProps {
+  isOpen: boolean
+}
+
+export default function ToggleButton({ onClick, isOpen }: Props) {
   return (
-    <button onClick={onClick} aria-label="Abrir menú" className="sidebar-toggle">
+    <button
+      onClick={onClick}
+      aria-label="Abrir menú"
+      className={`sidebar-toggle${isOpen ? ' sidebar-toggle--hidden' : ''}`}
+    >
       <MenuOutlined />
     </button>
   )

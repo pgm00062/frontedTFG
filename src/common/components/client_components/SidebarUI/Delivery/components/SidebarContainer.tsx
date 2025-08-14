@@ -7,7 +7,7 @@ export default function SidebarContainer() {
   const [open, setOpen] = useState(false)
   return (
     <>
-      <ToggleButton onClick={() => setOpen(true)} />
+      <ToggleButton onClick={() => setOpen(true)} isOpen={open} />
       <Sidebar isOpen={open} onClose={() => setOpen(false)} />
     </>
   )

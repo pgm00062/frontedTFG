@@ -4,7 +4,16 @@ import type { PropsGridFull } from '../interface';
 
 export default function GridFull({ expanded, onToggle, userPreview }: PropsGridFull) {
   return (
-    <section className="welcome-grid-full">
+    <>
+      {/* Overlay oscuro cuando hay una card expandida */}
+      {expanded !== null && (
+        <div 
+          className="welcome-card-overlay" 
+          onClick={() => onToggle(expanded)}
+        />
+      )}
+      
+      <section className="welcome-grid-full">
       <CardFull
         index={0}
         className={`welcome-card--perfil ${expanded !== null && expanded !== 0 ? 'welcome-card-full--hidden' : ''} ${expanded === 0 ? 'welcome-card-full--expanded' : ''}`}
@@ -22,6 +31,7 @@ export default function GridFull({ expanded, onToggle, userPreview }: PropsGridF
         icon="project"
         onToggle={() => onToggle(1)}
         expanded={expanded === 1}
+        href="/proyectos"
       />
       <CardFull
         index={2}
@@ -30,6 +40,7 @@ export default function GridFull({ expanded, onToggle, userPreview }: PropsGridF
         icon="bar"
         onToggle={() => onToggle(2)}
         expanded={expanded === 2}
+        href="/estadisticas"
       />
       <CardFull
         index={3}
@@ -38,7 +49,9 @@ export default function GridFull({ expanded, onToggle, userPreview }: PropsGridF
         icon="time"
         onToggle={() => onToggle(3)}
         expanded={expanded === 3}
+        href="/time"
       />
     </section>
+    </>
   );
 }

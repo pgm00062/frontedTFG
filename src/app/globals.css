@@ -271,6 +271,10 @@ body {
   background: #d9363e;
 }
 
+.sidebar-toggle--hidden {
+  display: none;
+}
+
 /* Auth styles */
 .auth-page {
   min-height: 100vh;
@@ -619,7 +623,8 @@ body {
   opacity: 0.85;
 }
 
-.welcome-card-full:hover {
+/* hover solo cuando no está expandida */
+.welcome-card-full:not(.welcome-card-full--expanded):hover {
   transform: translateY(-4px);
   box-shadow: 0 12px 28px rgba(15, 15, 15, 0.12);
 }
@@ -660,14 +665,44 @@ body {
 /* Estados de expansión */
 .welcome-card-full--expanded {
   position: fixed !important;
-  inset: 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 30;
+  /* Mantiene el mismo tamaño que en el grid original */
+  width: auto;
+  height: auto;
+  min-width: 300px;
+  min-height: 200px;
+  background: white !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+  border-radius: 20px;
+  overflow: visible;
+}
+
+.welcome-card-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
   z-index: 20;
+  backdrop-filter: blur(6px);
 }
 
 .welcome-card-full--hidden {
   opacity: 0;
   transform: scale(0.98);
   pointer-events: none;
+}
+
+/* Botón para ir a la página completa */
+.welcome-card-go {
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.welcome-card-go:hover,
+.welcome-card-go:focus {
+  color: #374151 !important;
+  background-color: #f3f4f6 !important;
 }
 
 /* Profile rows (horizontal) */
