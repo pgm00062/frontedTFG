@@ -21,7 +21,8 @@ export default async function WelcomeServer() {
       headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
     })) as ProfileClientProps['initialData']
     if (data) {
-      userPreview = { name: data.name, surname: data.surname }
+      // Pasamos una previsualización con campos mínimos necesarios para la tarjeta
+      userPreview = { id: data.id, name: data.name, surname: data.surname, email: data.email, dni: data.dni }
     }
   } catch (e) {
     userPreview = undefined;

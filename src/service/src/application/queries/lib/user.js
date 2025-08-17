@@ -82,5 +82,35 @@ const userUseCases = {
       headers,
     );
   },
+
+  //projects
+
+  createProject: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'createProject',
+      values,
+      'body',
+      'normal',
+      'post',
+      token,
+      undefined,
+      headers,
+    );
+  },
+  listProjects: (signal, values, token, headers) => {
+    // values can include { page, size }
+    return manageRequest(
+      signal,
+      'listProjects',
+      values,
+      'query',
+      'normal',
+      'get',
+      token,
+      undefined,
+      headers,
+    );
+  },
 };
 export default userUseCases;

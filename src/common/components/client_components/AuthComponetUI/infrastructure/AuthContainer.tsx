@@ -16,12 +16,15 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ initialMode = 'login' }) 
   const router = useRouter()
   const [error, setError] = useState<string>('')
 
+  // NOTE: login se realiza en el cliente y hace POST a `/api/auth/login` (BFF)
+  // Esto es intencional para que el navegador pueda recibir la cookie de sesión
+  // (Set-Cookie) desde el BFF como cookie first-party. Ver `docs/COMPONENTS.md`.
   const handleLogin = async (data: { email: string; password: string }) => {
     setIsLoading(true)
     setError('')
     
     try {
-      // Llamar a nuestro BFF para capturar JSESSIONID como cookie first-party
+  // Llamar a nuestro BFF para capturar JSESSIONID como cookie first-party
       const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

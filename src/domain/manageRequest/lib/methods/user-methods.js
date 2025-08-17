@@ -23,4 +23,14 @@ export const USER_METHODS = {
   logout: (response) => {
     return response.data;
   },
+
+  //projects
+
+  createProject: (response) => {
+    return response.data;
+  },
+  listProjects: (response) => {
+    return response.data;
+  },
+  
 };

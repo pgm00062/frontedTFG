@@ -11,6 +11,13 @@ export const USER_QUERIES = {
     `http://localhost:8080/users/me/password`,
   logout: () =>
     `http://localhost:8080/users/logout`,
+
+  //projects
+
+  createProject: () =>
+    `http://localhost:8080/projects/create`,
+  listProjects: () =>
+    `http://localhost:8080/projects/list`,
 };
 
 export const USER_ERROR_MESSAGES = {
@@ -20,4 +27,5 @@ export const USER_ERROR_MESSAGES = {
   updateUser: 'Error al actualizar el usuario',
   changePassword: 'Error al cambiar la contraseña del usuario',
   logout: 'Error al cerrar sesión',
+  createProject: 'Error al crear el proyecto',
 };

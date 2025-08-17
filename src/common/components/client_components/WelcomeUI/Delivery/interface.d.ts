@@ -1,10 +1,22 @@
 export interface ProfileMiniPreviewProps {
-  user: Pick<UserProfile, 'name' | 'surname'>;
+  user?: {
+    id?: number;
+    name?: string;
+    surname?: string;
+    email?: string;
+    dni?: string;
+  };
 }
 
 export interface GridProps {
   full?: boolean;
-  userPreview?: { name: string; surname: string };
+  userPreview?: {
+    id?: number;
+    name?: string;
+    surname?: string;
+    email?: string;
+    dni?: string;
+  };
 }
 
 export interface Props {
@@ -15,12 +27,24 @@ export interface Props {
   onToggle: () => void;
   expanded: boolean;
   href?: string;
-  userPreview?: { name: string; surname: string };
+  userPreview?: {
+    id?: number;
+    name?: string;
+    surname?: string;
+    email?: string;
+    dni?: string;
+  };
 }
 
 
 export interface PropsGridFull {
   expanded: number | null;
   onToggle: (i: number) => void;
-  userPreview?: { name: string; surname: string };
+  userPreview?: {
+    id?: number;
+    name?: string;
+    surname?: string;
+    email?: string;
+    dni?: string;
+  };
 }

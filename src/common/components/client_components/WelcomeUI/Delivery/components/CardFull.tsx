@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { UserOutlined, ProjectOutlined, BarChartOutlined, FieldTimeOutlined, CompressOutlined, ExpandOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import ProfileMiniPreview from './ProfileMiniPreview';
 import type { Props } from '../interface';
@@ -13,6 +14,7 @@ const icons: Record<string, React.ReactNode> = {
 export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview }: Props) {
   const ref = useRef<HTMLDivElement | null>(null);
   const [dimsStyle, setDimsStyle] = useState<Record<string, string>>({});
+  const router = typeof window !== 'undefined' ? useRouter() : null;
 
   const handleToggle = (e?: React.MouseEvent | React.KeyboardEvent) => {
     // If we are about to expand, capture current size before layout changes
@@ -33,7 +35,13 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
   const handleGoToPage = (e: React.MouseEvent) => {
     e.stopPropagation(); // Evita que colapse la card al pulsar la flecha
     if (href) {
-      window.location.href = href;
+      // Preferir navegación SPA de Next.js
+      try {
+        router?.push(href);
+      } catch (_err) {
+        // Fallback a recarga completa
+        window.location.href = href;
+      }
     }
   };
 

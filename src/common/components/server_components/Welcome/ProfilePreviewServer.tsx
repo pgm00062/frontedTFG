@@ -19,13 +19,13 @@ export default async function ProfilePreviewServer() {
       headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
     })) as ProfileClientProps['initialData'];
 
-    // Solo pasamos los datos mínimos necesarios
+    // Enviamos los campos mínimos para la vista previa (id, name, surname, email, dni)
     result = <ProfileClient initialData={{
       name: data?.name || '',
       surname: data?.surname || '',
-      id: 0,
-      email: '',
-      dni: ''
+      id: data?.id || 0,
+      email: data?.email || '',
+      dni: data?.dni || ''
     }} />;
   } catch (error: any) {
     // Si hay error, devolvemos null (preview vacía)

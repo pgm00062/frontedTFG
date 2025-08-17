@@ -31,7 +31,7 @@ export default function GridFull({ expanded, onToggle, userPreview }: PropsGridF
         icon="project"
         onToggle={() => onToggle(1)}
         expanded={expanded === 1}
-        href="/proyectos"
+        href="/projects"
       />
       <CardFull
         index={2}
