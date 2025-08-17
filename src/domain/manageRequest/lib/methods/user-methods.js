@@ -32,5 +32,8 @@ export const USER_METHODS = {
   listProjects: (response) => {
     return response.data;
   },
+  getProjectById: (response) => {
+    return response.data;
+  },
   
 };

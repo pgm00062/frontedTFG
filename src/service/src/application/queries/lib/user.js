@@ -112,5 +112,19 @@ const userUseCases = {
       headers,
     );
   },
+  getProjectById: (signal, values, token, headers) => {
+    // values expected to be the id
+    return manageRequest(
+      signal,
+      'getProjectById',
+      values,
+      'url',
+      'normal',
+      'get',
+      token,
+      undefined,
+      headers,
+    );
+  },
 };
 export default userUseCases;

@@ -25,7 +25,6 @@ export default async function ProjectsPage() {
   }
   return (
     <main className="page-container">
-      <h1>Proyectos</h1>
       {/* ProjectsContainer es un client component que recibirá initialProjects */}
       {/* @ts-ignore */}
       <ProjectsContainer initialProjects={projects} />

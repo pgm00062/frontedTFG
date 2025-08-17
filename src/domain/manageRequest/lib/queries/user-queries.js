@@ -18,6 +18,8 @@ export const USER_QUERIES = {
     `http://localhost:8080/projects/create`,
   listProjects: () =>
     `http://localhost:8080/projects/list`,
+  getProjectById: () =>
+    `http://localhost:8080/projects`,
 };
 
 export const USER_ERROR_MESSAGES = {

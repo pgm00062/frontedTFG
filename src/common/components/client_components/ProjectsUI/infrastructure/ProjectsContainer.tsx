@@ -51,8 +51,9 @@ export default function ProjectsContainer({ initialProjects }: ProjectsContainer
   }
 
   return (
-    <div>
-      <div style={{ marginBottom: 16 }}>
+    <div style={{ position: 'relative', paddingTop: 56 }}>
+      {/* fixed button top-right */}
+      <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
         <Button type="primary" onClick={() => setOpen(true)}>Crear proyecto</Button>
       </div>
       <ProjectsList projects={projects} />
