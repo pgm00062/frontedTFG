@@ -20,6 +20,8 @@ export const USER_QUERIES = {
     `http://localhost:8080/projects/list`,
   getProjectById: () =>
     `http://localhost:8080/projects`,
+  searchProjectsByName: () =>
+    `http://localhost:8080/projects/searchName`,
 };
 
 export const USER_ERROR_MESSAGES = {
@@ -30,4 +32,5 @@ export const USER_ERROR_MESSAGES = {
   changePassword: 'Error al cambiar la contraseña del usuario',
   logout: 'Error al cerrar sesión',
   createProject: 'Error al crear el proyecto',
+  searchProjectsByName: 'Error al buscar proyectos por nombre',
 };

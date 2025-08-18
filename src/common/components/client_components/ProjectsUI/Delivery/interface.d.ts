@@ -11,4 +11,14 @@ export interface ProjectsListProps {
 
 export interface ProjectsContainerProps {
   initialProjects: ProjectItem[] | null;
+  searchTerm?: string;
+}
+
+export interface getProjectIdProps {
+  project: ProjectItem;
+}
+
+export interface ProjectSearchProps {
+  onSearch: (searchTerm: string) => Promise<any[]>
+  initialSearchTerm?: string
 }

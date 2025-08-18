@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from 'react'
 import { Form, Input, Button, DatePicker, InputNumber, Select, message } from 'antd'
-import type { ProjectItem } from '../interface'
 
 const { TextArea } = Input
 const { RangePicker } = DatePicker

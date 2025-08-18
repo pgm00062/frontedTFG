@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import Service from '@/service/src'
 
 export async function POST(request: Request) {
   try {
@@ -9,54 +10,37 @@ export async function POST(request: Request) {
 
     // parse cookies into an object
     const parseCookies = (c: string) =>
-      c.split(';').map(s => s.trim()).filter(Boolean).reduce((acc: any, pair) => {
-        const [k, ...v] = pair.split('=')
-        acc[k] = decodeURIComponent(v.join('='))
-        return acc
-      }, {})
+      c
+        .split(';')
+        .map((s) => s.trim())
+        .filter(Boolean)
+        .reduce((acc: any, pair) => {
+          const [k, ...v] = pair.split('=')
+          acc[k] = decodeURIComponent(v.join('='))
+          return acc
+        }, {})
 
     const cookies = cookieHeader ? parseCookies(cookieHeader) : {}
     const authToken = cookies['AUTH_TOKEN'] || cookies['AuthToken'] || cookies['auth_token']
     const jsession = cookies['JSESSIONID']
 
-    const forwardHeaders: Record<string, string> = { 'Content-Type': 'application/json' }
-    if (cookieHeader) forwardHeaders['Cookie'] = cookieHeader
-    if (authToken) forwardHeaders['Authorization'] = authToken.startsWith('Bearer ') ? authToken : `Bearer ${authToken}`
+    const authHeader = authToken ? (authToken.startsWith('Bearer ') ? authToken : `Bearer ${authToken}`) : undefined
+    const forwardHeaders = jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined
 
-    const res = await fetch('http://localhost:8080/projects/create', {
-      method: 'POST',
+    // Use Service to execute the create-project useCase.
+    // Ajusta 'createProject' si tu useCase tiene otro nombre.
+    const result = await Service.getCases('createProject', {
+      endPointData: body,
+      token: authHeader,
       headers: forwardHeaders,
-      body: JSON.stringify(body),
     })
 
-    const text = await res.text()
-    const contentType = res.headers.get('content-type') || ''
-
-    // Forward status and body; in case of error devolver detalle para debugging
-    if (!res.ok) {
-      try {
-        const json = contentType.includes('application/json') ? JSON.parse(text) : { message: text }
-        // include minimal info about forwarded auth/cookies for debugging (do not leak token value)
-        const debugInfo = {
-          backendStatus: res.status,
-          backendBody: json,
-          forwarded: {
-            forwardedAuth: !!authToken,
-            forwardedJSession: !!jsession,
-          },
-        }
-        return NextResponse.json(debugInfo, { status: res.status })
-      } catch (e) {
-        return new NextResponse(text, { status: res.status })
-      }
-    }
-
-    if (contentType.includes('application/json')) {
-      return NextResponse.json(JSON.parse(text), { status: res.status })
-    }
-
-    return new NextResponse(text, { status: res.status })
+    return NextResponse.json(result)
   } catch (err: any) {
-    return NextResponse.json({ message: err.message || 'Error' }, { status: 500 })
+    console.error('/api/projects/create error', err)
+    return NextResponse.json(
+      { message: err?.message || 'Error interno', error: String(err) },
+      { status: 500 }
+    )
   }
 }

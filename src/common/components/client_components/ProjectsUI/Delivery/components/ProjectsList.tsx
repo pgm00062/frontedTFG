@@ -1,6 +1,6 @@
- 'use client'
+'use client'
 import React, { useState } from 'react'
-import { Table, Empty, Tag, Drawer, Button } from 'antd'
+import { Table, Empty, Modal } from 'antd'
 import type { ProjectsListProps } from '../interface'
 
 const statusColor: Record<string, string> = {
@@ -16,41 +16,33 @@ const statusBg: Record<string, string> = {
 }
 
 export default function ProjectsList({ projects }: ProjectsListProps) {
-  const [open, setOpen] = useState(false)
-  const [project, setProject] = useState<any>(null)
+  const [selectedProject, setSelectedProject] = useState<any>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
-  const openProject = async (id: any) => {
-    try {
-      // fetch via local BFF to avoid CORS / direct backend calls from browser
-      const res = await fetch(`/api/projects/${encodeURIComponent(id)}`)
-      const json = await res.json()
-      // BFF returns debug structure on error; handle both shapes
-      if (!res.ok) {
-        console.error('BFF error', json)
-        setProject({ error: json })
-      } else {
-        setProject(json)
-      }
-      setOpen(true)
-    } catch (e) {
-      console.error('openProject error', e)
-      setProject({ error: e })
-      setOpen(true)
-    }
+  const openProjectModal = (project: any) => {
+    setSelectedProject(project)
+    setModalOpen(true)
   }
   if (!projects || projects.length === 0) {
     return <Empty description="No hay proyectos aún" />
   }
 
   const columns = [
+    
     {
       title: 'Nombre',
       dataIndex: 'name',
       key: 'name',
       render: (_: any, record: any) => (
-        <div style={{ fontWeight: 600, color: '#0f172a', cursor: 'pointer' }} onClick={() => openProject(record.id)}>{record.name}</div>
+        <span 
+          style={{ fontWeight: 600, color: '#0f172a', cursor: 'pointer' }}
+          onClick={() => openProjectModal(record)}
+        >
+          {record.name}
+        </span>
       ),
     },
+    
     {
       title: 'Descripción',
       dataIndex: 'description',
@@ -88,28 +80,32 @@ export default function ProjectsList({ projects }: ProjectsListProps) {
         rowClassName={() => 'project-row'}
       />
 
-      <Drawer open={open} onClose={() => setOpen(false)} placement="right" width={560} bodyStyle={{ padding: 24 }}>
-        <div style={{ position: 'relative' }}>
-          <Button onClick={() => setOpen(false)} style={{ position: 'absolute', left: 0, top: 0 }}>Cerrar</Button>
-          {project?.error ? (
-            <div>Error al cargar: {JSON.stringify(project.error)}</div>
-          ) : project ? (
-            <div>
-              <h2 style={{ marginTop: 16 }}>{project.name}</h2>
-              <p style={{ color: '#475569' }}>{project.description}</p>
-              <div style={{ marginTop: 12 }}>
-                <div><strong>Tipo:</strong> {project.type}</div>
-                <div><strong>Estado:</strong> {project.status}</div>
-                <div><strong>Inicio:</strong> {project.startDate}</div>
-                <div><strong>Fin:</strong> {project.endDate}</div>
-                <div><strong>Presupuesto:</strong> {project.budget}</div>
-              </div>
+      <Modal
+        open={modalOpen}
+        onCancel={() => setModalOpen(false)}
+        footer={null}
+        centered
+        width={720}
+        title="Detalles del Proyecto"
+      >
+        {selectedProject?.error ? (
+          <div style={{ padding: 16, color: '#ef4444' }}>
+            Error al cargar el proyecto: {selectedProject.error}
+          </div>
+        ) : selectedProject ? (
+          <div style={{ padding: 16 }}>
+            <h3 style={{ marginTop: 0, marginBottom: 16 }}>{selectedProject.name}</h3>
+            <p style={{ color: '#475569', marginBottom: 16 }}>{selectedProject.description}</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div><strong>Estado:</strong> {selectedProject.status}</div>
+              {selectedProject.type && <div><strong>Tipo:</strong> {selectedProject.type}</div>}
+              {selectedProject.startDate && <div><strong>Inicio:</strong> {selectedProject.startDate}</div>}
+              {selectedProject.endDate && <div><strong>Fin:</strong> {selectedProject.endDate}</div>}
+              {selectedProject.budget && <div><strong>Presupuesto:</strong> {selectedProject.budget}</div>}
             </div>
-          ) : (
-            <div>Cargando...</div>
-          )}
-        </div>
-      </Drawer>
+          </div>
+        ) : null}
+      </Modal>
     </>
   )
 }

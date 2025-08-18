@@ -1,13 +1,16 @@
 'use client'
-import React, { useState } from 'react'
-import ProjectsList from '../Delivery/components/ProjectsList'
-import CreateProjectForm from '../Delivery/components/CreateProjectForm'
-import { Button, Drawer } from 'antd'
-import type { ProjectsContainerProps, ProjectItem } from '../Delivery/interface'
+import { useState, useEffect } from 'react'
+import type {  ProjectItem } from '../Delivery/interface'
 
-export default function ProjectsContainer({ initialProjects }: ProjectsContainerProps) {
+// ...existing code...
+export default function useProjectsContainer(initialProjects: ProjectItem[] | null | undefined = []) {
   const [projects, setProjects] = useState<ProjectItem[]>(initialProjects || [])
   const [open, setOpen] = useState(false)
+
+  // Actualizar proyectos cuando cambien los initialProjects (ej: búsqueda)
+  useEffect(() => {
+    setProjects(initialProjects || [])
+  }, [initialProjects])
 
   const handleCreate = async (values: any): Promise<void> => {
     try {
@@ -49,17 +52,12 @@ export default function ProjectsContainer({ initialProjects }: ProjectsContainer
     }
   }
 
-  return (
-    <div style={{ position: 'relative', paddingTop: 56 }}>
-      {/* fixed button top-right */}
-      <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
-        <Button type="primary" onClick={() => setOpen(true)}>Crear proyecto</Button>
-      </div>
-      <ProjectsList projects={projects} />
-
-      <Drawer title="Crear proyecto" placement="right" onClose={() => setOpen(false)} open={open} width={480}>
-        <CreateProjectForm onCreate={handleCreate} />
-      </Drawer>
-    </div>
-  )
+  return {
+    projects,
+    setProjects,
+    open,
+    setOpen,
+    handleCreate,
+  }
 }
+// ...existing code...

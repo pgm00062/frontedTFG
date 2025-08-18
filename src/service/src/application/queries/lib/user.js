@@ -126,5 +126,18 @@ const userUseCases = {
       headers,
     );
   },
+  searchProjectByName: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'searchProjectsByName',
+      values,
+      'query',
+      'normal',
+      'get',
+      token,
+      undefined,
+      headers,
+    );
+  },
 };
 export default userUseCases;
