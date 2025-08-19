@@ -8,6 +8,22 @@ export interface ProfileMiniPreviewProps {
   };
 }
 
+export interface ProjectItem {
+  id: number;
+  name: string;
+  title?: string; // Opcional, derivado de name
+  description: string;
+  status: 'EN_PROGRESO' | 'TERMINADO' | 'CANCELADO';
+  type?: string;
+  startDate?: string;
+  endDate?: string;
+  budget?: number;
+}
+
+export interface ProjectsMiniPreviewProps {
+  projects: ProjectItem[];
+}
+
 export interface GridProps {
   full?: boolean;
   userPreview?: {
@@ -17,6 +33,7 @@ export interface GridProps {
     email?: string;
     dni?: string;
   };
+  projectsPreview?: ProjectItem[];
 }
 
 export interface Props {
@@ -34,8 +51,8 @@ export interface Props {
     email?: string;
     dni?: string;
   };
+  projectsPreview?: ProjectItem[];
 }
-
 
 export interface PropsGridFull {
   expanded: number | null;
@@ -47,4 +64,5 @@ export interface PropsGridFull {
     email?: string;
     dni?: string;
   };
+  projectsPreview?: ProjectItem[];
 }

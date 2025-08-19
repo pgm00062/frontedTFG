@@ -5,9 +5,13 @@ import type { ProfileMiniPreviewProps } from '../interface';
 import FieldRow from '@/common/components/client_components/ProfileUI/Delivery/components/FieldRow';
 
 const ProfileMiniPreview: FC<ProfileMiniPreviewProps> = ({ user }) => {
+  console.log('👤 ProfileMiniPreview recibió:', user);
+  
   const name = user?.name || '';
   const surname = user?.surname || '';
   const email = user?.email || '';
+
+  console.log('👤 Datos procesados:', { name, surname, email });
 
   return (
     <div className="profile-preview-outer">

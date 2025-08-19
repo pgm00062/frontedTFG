@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { UserOutlined, ProjectOutlined, BarChartOutlined, FieldTimeOutlined, CompressOutlined, ExpandOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import ProfileMiniPreview from './ProfileMiniPreview';
+import ProjectsMiniPreview from './ProjectsMiniPreview';
 import type { Props } from '../interface';
 
 const icons: Record<string, React.ReactNode> = {
@@ -11,10 +12,12 @@ const icons: Record<string, React.ReactNode> = {
   time: <FieldTimeOutlined className="welcome-card-icon-top" />,
 };
 
-export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview }: Props) {
-  const ref = useRef<HTMLDivElement | null>(null);
+export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview }: Readonly<Props>) {
+  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview });
+  
+  const ref = useRef<HTMLButtonElement | null>(null);
   const [dimsStyle, setDimsStyle] = useState<Record<string, string>>({});
-  const router = typeof window !== 'undefined' ? useRouter() : null;
+  const router = useRouter();
 
   const handleToggle = (e?: React.MouseEvent | React.KeyboardEvent) => {
     // If we are about to expand, capture current size before layout changes
@@ -35,23 +38,30 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
   const handleGoToPage = (e: React.MouseEvent) => {
     e.stopPropagation(); // Evita que colapse la card al pulsar la flecha
     if (href) {
-      // Preferir navegación SPA de Next.js
+      // Navegación SPA de Next.js
       try {
-        router?.push(href);
-      } catch (_err) {
-        // Fallback a recarga completa
-        window.location.href = href;
+        router.push(href);
+      } catch {
+        // Fallback a recarga completa si falla
+        if (typeof window !== 'undefined') {
+          window.location.href = href;
+        }
       }
     }
   };
 
   return (
-    <div
+    <button
       ref={ref}
       className={`welcome-card-full ${className || ''} ${expanded ? 'welcome-card-full--expanded' : ''}`}
-      style={{ borderRadius: 16, ...dimsStyle }}
-      role="button"
-      tabIndex={0}
+      style={{ 
+        borderRadius: 16, 
+        background: 'transparent',
+        border: 'none',
+        padding: 0,
+        cursor: 'pointer',
+        ...dimsStyle 
+      }}
       onClick={(e) => handleToggle(e as React.MouseEvent)}
       onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { handleToggle(e); } }}
       aria-pressed={expanded}
@@ -60,9 +70,18 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
         {icons[icon]}
         <h3 className="welcome-card-title-top">{title}</h3>
       </div>
-      {userPreview && (
+      
+      {/* Previsualización del perfil - solo en la tarjeta de perfil */}
+      {userPreview && title === 'Perfil' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <ProfileMiniPreview user={userPreview} />
+        </div>
+      )}
+      
+      {/* Previsualización de proyectos - solo en la tarjeta de proyectos */}
+      {projectsPreview && title === 'Proyectos' && (
+        <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <ProjectsMiniPreview projects={projectsPreview} />
         </div>
       )}
       
@@ -93,6 +112,6 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
       <div style={{ position: 'absolute', top: 16, right: 16, color: '#111827' }}>
         {expanded ? <CompressOutlined /> : <ExpandOutlined />}
       </div>
-    </div>
+    </button>
   );
 }

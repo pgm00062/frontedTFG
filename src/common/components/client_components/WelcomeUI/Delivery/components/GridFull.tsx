@@ -2,7 +2,7 @@ import React from 'react';
 import CardFull from './CardFull';
 import type { PropsGridFull } from '../interface';
 
-export default function GridFull({ expanded, onToggle, userPreview }: PropsGridFull) {
+export default function GridFull({ expanded, onToggle, userPreview, projectsPreview }: PropsGridFull) {
   return (
     <>
       {/* Overlay oscuro cuando hay una card expandida */}
@@ -32,6 +32,7 @@ export default function GridFull({ expanded, onToggle, userPreview }: PropsGridF
         onToggle={() => onToggle(1)}
         expanded={expanded === 1}
         href="/projects"
+        projectsPreview={projectsPreview}
       />
       <CardFull
         index={2}
