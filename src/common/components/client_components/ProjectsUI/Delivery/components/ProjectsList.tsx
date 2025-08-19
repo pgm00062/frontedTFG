@@ -1,7 +1,14 @@
 'use client'
-import React, { useState } from 'react'
-import { Table, Empty, Modal } from 'antd'
+import React, { useState, useEffect } from 'react'
+import { Table, Empty, Modal, Button, message } from 'antd'
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
 import type { ProjectsListProps } from '../interface'
+import StatusSelector from './StatusSelector'
+import EditProjectForm from './EditProjectForm'
+import DeleteConfirmationModal from './DeleteConfirmationModal'
+import { useUpdateProjectStatus } from '../../infrastructure/useUpdateProjectStatus'
+import { useUpdateProject } from '../../infrastructure/useUpdateProject'
+import { useDeleteProject } from '../../infrastructure/useDeleteProject'
 
 const statusColor: Record<string, string> = {
   EN_PROGRESO: '#2f86eb', // soft blue
@@ -15,15 +22,91 @@ const statusBg: Record<string, string> = {
   CANCELADO: 'rgba(239,68,68,0.08)',
 }
 
-export default function ProjectsList({ projects }: ProjectsListProps) {
+export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) {
   const [selectedProject, setSelectedProject] = useState<any>(null)
   const [modalOpen, setModalOpen] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false)
+  const [projectsList, setProjectsList] = useState(projects || [])
+
+  // Sincronizar cuando cambien los props (ej: búsqueda)
+  useEffect(() => {
+    setProjectsList(projects || [])
+  }, [projects])
+
+  const { updateProjectStatus } = useUpdateProjectStatus({
+    onStatusUpdated: (projectId, newStatus) => {
+      // Actualizar la lista local inmediatamente
+      setProjectsList(prev => 
+        prev.map(project => 
+          project.id === projectId 
+            ? { ...project, status: newStatus as 'EN_PROGRESO' | 'TERMINADO' | 'CANCELADO' }
+            : project
+        )
+      )
+      
+      // Si el modal está abierto y es el mismo proyecto, actualizar también
+      if (selectedProject?.id === projectId) {
+        setSelectedProject((prev: any) => ({ ...prev, status: newStatus }))
+      }
+    }
+  })
+
+  const { updateProject } = useUpdateProject({
+    onProjectUpdated: (projectId, updatedProject) => {
+      // Actualizar la lista local inmediatamente
+      setProjectsList(prev => 
+        prev.map(project => 
+          project.id === projectId ? updatedProject : project
+        )
+      )
+      
+      // Actualizar el proyecto seleccionado
+      setSelectedProject(updatedProject)
+      setIsEditing(false)
+    }
+  })
+
+  const { deleteProject } = useDeleteProject({
+    onProjectDeleted: (projectId) => {
+      // Eliminar el proyecto de la lista local inmediatamente
+      setProjectsList(prev => 
+        prev.filter(project => project.id !== projectId)
+      )
+      
+      // Cerrar el modal si está abierto
+      setModalOpen(false)
+      setDeleteModalOpen(false)
+      setIsEditing(false)
+      setSelectedProject(null)
+      
+      message.success('Proyecto eliminado correctamente')
+    }
+  })
 
   const openProjectModal = (project: any) => {
     setSelectedProject(project)
+    setIsEditing(false)
     setModalOpen(true)
   }
-  if (!projects || projects.length === 0) {
+
+  const handleEditProject = async (projectData: any) => {
+    if (selectedProject) {
+      await updateProject(selectedProject.id, projectData)
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setIsEditing(false)
+  }
+
+  const handleDeleteProject = async () => {
+    if (selectedProject) {
+      await deleteProject(selectedProject.id)
+    }
+  }
+  
+  if (!projectsList || projectsList.length === 0) {
     return <Empty description="No hay proyectos aún" />
   }
 
@@ -34,12 +117,21 @@ export default function ProjectsList({ projects }: ProjectsListProps) {
       dataIndex: 'name',
       key: 'name',
       render: (_: any, record: any) => (
-        <span 
-          style={{ fontWeight: 600, color: '#0f172a', cursor: 'pointer' }}
+        <button 
+          style={{ 
+            fontWeight: 600, 
+            color: '#0f172a', 
+            cursor: 'pointer',
+            background: 'none',
+            border: 'none',
+            padding: 0,
+            font: 'inherit',
+            textAlign: 'left'
+          }}
           onClick={() => openProjectModal(record)}
         >
           {record.name}
-        </span>
+        </button>
       ),
     },
     
@@ -58,11 +150,12 @@ export default function ProjectsList({ projects }: ProjectsListProps) {
       dataIndex: 'status',
       key: 'status',
       align: 'center' as const,
-      render: (s: string) => (
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 10px', borderRadius: 9999, background: statusBg[s] || 'transparent' }}>
-          <span style={{ width: 8, height: 8, borderRadius: 8, background: statusColor[s] }} />
-          <span style={{ color: statusColor[s], fontWeight: 600, fontSize: 13 }}>{s.replace('_', ' ')}</span>
-        </div>
+      width: 140,
+      render: (_: string, record: any) => (
+        <StatusSelector 
+          project={record} 
+          onStatusChange={updateProjectStatus}
+        />
       ),
     },
   ]
@@ -70,7 +163,7 @@ export default function ProjectsList({ projects }: ProjectsListProps) {
   return (
     <>
       <Table
-        dataSource={projects}
+        dataSource={projectsList}
         columns={columns}
         rowKey="id"
         pagination={false}
@@ -82,30 +175,78 @@ export default function ProjectsList({ projects }: ProjectsListProps) {
 
       <Modal
         open={modalOpen}
-        onCancel={() => setModalOpen(false)}
+        onCancel={() => {
+          setModalOpen(false)
+          setIsEditing(false)
+          setDeleteModalOpen(false)
+        }}
         footer={null}
         centered
         width={720}
-        title="Detalles del Proyecto"
+        title={isEditing ? "Editar Proyecto" : "Detalles del Proyecto"}
       >
         {selectedProject?.error ? (
           <div style={{ padding: 16, color: '#ef4444' }}>
             Error al cargar el proyecto: {selectedProject.error}
           </div>
-        ) : selectedProject ? (
-          <div style={{ padding: 16 }}>
-            <h3 style={{ marginTop: 0, marginBottom: 16 }}>{selectedProject.name}</h3>
-            <p style={{ color: '#475569', marginBottom: 16 }}>{selectedProject.description}</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              <div><strong>Estado:</strong> {selectedProject.status}</div>
-              {selectedProject.type && <div><strong>Tipo:</strong> {selectedProject.type}</div>}
-              {selectedProject.startDate && <div><strong>Inicio:</strong> {selectedProject.startDate}</div>}
-              {selectedProject.endDate && <div><strong>Fin:</strong> {selectedProject.endDate}</div>}
-              {selectedProject.budget && <div><strong>Presupuesto:</strong> {selectedProject.budget}</div>}
-            </div>
-          </div>
-        ) : null}
+        ) : (
+          selectedProject && (
+            <>
+              {!isEditing ? (
+                // Vista de solo lectura
+                <div style={{ padding: 16 }}>
+                  <h3 style={{ marginTop: 0, marginBottom: 16 }}>{selectedProject.name}</h3>
+                  <p style={{ color: '#475569', marginBottom: 16 }}>{selectedProject.description}</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    <div><strong>Estado:</strong> {selectedProject.status}</div>
+                    {selectedProject.type && <div><strong>Tipo:</strong> {selectedProject.type}</div>}
+                    {selectedProject.startDate && <div><strong>Inicio:</strong> {selectedProject.startDate}</div>}
+                    {selectedProject.endDate && <div><strong>Fin:</strong> {selectedProject.endDate}</div>}
+                    {selectedProject.budget && <div><strong>Presupuesto:</strong> {selectedProject.budget}</div>}
+                  </div>
+                  
+                  {/* Botones en la parte inferior */}
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+                    {/* Botón eliminar en la esquina inferior izquierda */}
+                    <Button 
+                      danger
+                      icon={<DeleteOutlined />}
+                      onClick={() => setDeleteModalOpen(true)}
+                    >
+                      Eliminar proyecto
+                    </Button>
+                    
+                    {/* Botón editar en la esquina inferior derecha */}
+                    <Button 
+                      type="primary" 
+                      icon={<EditOutlined />}
+                      onClick={() => setIsEditing(true)}
+                    >
+                      Actualizar datos
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                // Vista de edición
+                <div style={{ padding: 16 }}>
+                  <EditProjectForm
+                    project={selectedProject}
+                    onSave={handleEditProject}
+                    onCancel={handleCancelEdit}
+                  />
+                </div>
+              )}
+            </>
+          )
+        )}
       </Modal>
+
+      <DeleteConfirmationModal
+        project={selectedProject}
+        open={deleteModalOpen}
+        onConfirm={handleDeleteProject}
+        onCancel={() => setDeleteModalOpen(false)}
+      />
     </>
   )
 }

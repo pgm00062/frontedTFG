@@ -139,5 +139,131 @@ const userUseCases = {
       headers,
     );
   },
+  updateStatusProject: async (signal, values, token, headers) => {
+    const { id, status } = values;
+    
+    try {
+      const fetchConfig = {
+        signal,
+        method: 'PATCH',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token
+            ? (() => {
+                const headerToken = token.startsWith('Bearer ')
+                  ? token
+                  : `Bearer ${token}`;
+                return {
+                  Authorization: headerToken,
+                };
+              })()
+            : {}),
+          ...headers,
+        },
+        credentials: 'include',
+        body: JSON.stringify({ status }), // Status directo sin mapeo
+      };
+
+      const url = `http://localhost:8080/projects/status/${id}`;
+      const response = await fetch(url, fetchConfig);
+
+      if (!response.ok) {
+        console.error('[FETCH_ERROR]', response);
+        const text = await response.text();
+        throw new Error(`Error al actualizar el estado del proyecto: ${response.status} ${text}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[updateStatusProject] error:', error);
+      throw error;
+    }
+  },
+  updateProject: async (signal, values, token, headers) => {
+    // Custom handler for updateProject because we need ID in URL and project data in body
+    const { id, ...projectData } = values;
+    
+    try {
+      const fetchConfig = {
+        signal,
+        method: 'PUT',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token
+            ? (() => {
+                const headerToken = token.startsWith('Bearer ')
+                  ? token
+                  : `Bearer ${token}`;
+                return {
+                  Authorization: headerToken,
+                };
+              })()
+            : {}),
+          ...headers,
+        },
+        credentials: 'include',
+        body: JSON.stringify(projectData), // Project data without ID
+      };
+
+      const url = `http://localhost:8080/projects/update/${id}`;
+      const response = await fetch(url, fetchConfig);
+
+      if (!response.ok) {
+        console.error('[FETCH_ERROR]', response);
+        const text = await response.text();
+        throw new Error(`Error al actualizar el proyecto: ${response.status} ${text}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('[updateProject] error:', error);
+      throw error;
+    }
+  },
+  deleteProject: async (signal, values, token, headers) => {
+    // Custom handler for deleteProject because we need just ID in URL
+    const { id } = values;
+    
+    try {
+      const fetchConfig = {
+        signal,
+        method: 'DELETE',
+        cache: 'no-store',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token
+            ? (() => {
+                const headerToken = token.startsWith('Bearer ')
+                  ? token
+                  : `Bearer ${token}`;
+                return {
+                  Authorization: headerToken,
+                };
+              })()
+            : {}),
+          ...headers,
+        },
+        credentials: 'include',
+      };
+
+      const url = `http://localhost:8080/projects/delete/${id}`;
+      const response = await fetch(url, fetchConfig);
+
+      if (!response.ok) {
+        console.error('[FETCH_ERROR]', response);
+        const text = await response.text();
+        throw new Error(`Error al eliminar el proyecto: ${response.status} ${text}`);
+      }
+
+      // Para DELETE, el backend puede retornar vacío o un mensaje de confirmación
+      const text = await response.text();
+      return text ? JSON.parse(text) : { success: true };
+    } catch (error) {
+      console.error('[deleteProject] error:', error);
+      throw error;
+    }
+  },
 };
 export default userUseCases;

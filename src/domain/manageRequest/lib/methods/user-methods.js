@@ -38,5 +38,14 @@ export const USER_METHODS = {
   searchProjectsByName: (response) => {
     return response.data;
   },
+  updateProjectStatus: (response) => {
+    return response.data;
+  },
+  updateProject: (response) => {
+    return response.data;
+  },
+  deleteProject: (response) => {
+    return response.data;
+  },
 
 };

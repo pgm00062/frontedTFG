@@ -2,7 +2,52 @@
 import { useState, useEffect } from 'react'
 import type {  ProjectItem } from '../Delivery/interface'
 
-// ...existing code...
+// Hook para la versión con Server Actions (onCreate prop)
+export function useProjectsContainerWithServerAction(
+  initialProjects: ProjectItem[] | null | undefined = [],
+  onCreate?: (values: Record<string, any>) => Promise<any>
+) {
+  const [projects, setProjects] = useState<ProjectItem[]>(initialProjects || [])
+  const [open, setOpen] = useState(false)
+  const [creating, setCreating] = useState(false)
+
+  const handleCreate = async (values: any): Promise<void> => {
+    if (!onCreate) {
+      console.warn('onCreate not provided; aborting create')
+      return
+    }
+
+    // Normaliza payload según tu backend
+    const { name, description, type, startDate, endDate, status, budget } = values || {}
+    const payload = { name, description, type, startDate, endDate, status, budget }
+
+    setCreating(true)
+    try {
+      // onCreate puede ser una Server Action
+      const created = await onCreate(payload)
+      if (created) {
+        setProjects(prev => [created, ...prev])
+      }
+      setOpen(false)
+    } catch (err) {
+      console.error('[ProjectsContainer] create error:', err)
+      throw err
+    } finally {
+      setCreating(false)
+    }
+  }
+
+  return {
+    projects,
+    setProjects,
+    open,
+    setOpen,
+    creating,
+    handleCreate,
+  }
+}
+
+// Hook para la versión con API Routes (fetch directo)
 export default function useProjectsContainer(initialProjects: ProjectItem[] | null | undefined = []) {
   const [projects, setProjects] = useState<ProjectItem[]>(initialProjects || [])
   const [open, setOpen] = useState(false)

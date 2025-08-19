@@ -5,13 +5,18 @@ import ProjectSearch from './components/ProjectSearch'
 import CreateProjectForm from './components/CreateProjectForm'
 import { Button, Drawer, Divider } from 'antd'
 import type { ProjectsContainerProps } from './interface'
-import useProjectsContainer from '../infrastructure/ProjectsContainerOperation'
+import useProjectsContainer, { useProjectsContainerWithServerAction } from '../infrastructure/ProjectsContainerOperation'
 import { useProjectSearch } from '../infrastructure/useProjectSearch'
 
-// ...existing code...
-export default function ProjectsContainer({ initialProjects, searchTerm }: ProjectsContainerProps) {
-  const { projects, open, setOpen, handleCreate } = useProjectsContainer(initialProjects)
+export default function ProjectsContainer({ initialProjects, searchTerm, onCreate }: ProjectsContainerProps) {
+  // Si viene onCreate (Server Action), usar el hook correspondiente
+  // Si no, usar el hook con fetch directo
+  const serverActionHook = useProjectsContainerWithServerAction(initialProjects, onCreate)
+  const apiRouteHook = useProjectsContainer(initialProjects)
   const { searchProjects } = useProjectSearch()
+  
+  // Seleccionar el hook apropiado
+  const { projects, open, setOpen, handleCreate } = onCreate ? serverActionHook : apiRouteHook
 
   return (
     <div style={{ position: 'relative', paddingTop: 56 }}>
