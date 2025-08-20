@@ -48,4 +48,9 @@ export const USER_METHODS = {
     return response.data;
   },
 
+  //TIME
+  startTime: (response) => {
+    return response.data;
+  },
+
 };
