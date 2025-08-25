@@ -2,7 +2,7 @@ import React from 'react';
 import CardFull from './CardFull';
 import type { PropsGridFull } from '../interface';
 
-export default function GridFull({ expanded, onToggle, userPreview, projectsPreview }: PropsGridFull) {
+export default function GridFull({ expanded, onToggle, userPreview, projectsPreview, statisticsPreview }: Readonly<PropsGridFull>) {
   return (
     <>
       {/* Overlay oscuro cuando hay una card expandida */}
@@ -36,16 +36,17 @@ export default function GridFull({ expanded, onToggle, userPreview, projectsPrev
       />
       <CardFull
         index={2}
-        className={`welcome-card--mensajes ${expanded !== null && expanded !== 2 ? 'welcome-card-full--hidden' : ''} ${expanded === 2 ? 'welcome-card-full--expanded' : ''}`}
+        className={`welcome-card--estadisticas ${expanded !== null && expanded !== 2 ? 'welcome-card-full--hidden' : ''} ${expanded === 2 ? 'welcome-card-full--expanded' : ''}`}
         title="Estadisticas"
         icon="bar"
         onToggle={() => onToggle(2)}
         expanded={expanded === 2}
-        href="/estadisticas"
+        href="/statistics"
+        statisticsPreview={statisticsPreview}
       />
       <CardFull
         index={3}
-        className={`welcome-card--ajustes ${expanded !== null && expanded !== 3 ? 'welcome-card-full--hidden' : ''} ${expanded === 3 ? 'welcome-card-full--expanded' : ''}`}
+        className={`welcome-card--time ${expanded !== null && expanded !== 3 ? 'welcome-card-full--hidden' : ''} ${expanded === 3 ? 'welcome-card-full--expanded' : ''}`}
         title="Time"
         icon="time"
         onToggle={() => onToggle(3)}

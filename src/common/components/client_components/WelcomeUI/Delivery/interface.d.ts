@@ -24,6 +24,13 @@ export interface ProjectsMiniPreviewProps {
   projects: ProjectItem[];
 }
 
+export interface StatisticsPreviewData {
+  monthlyEarnings: number;
+  pendingEarnings: number;
+  totalTimeWorked: string;
+  avgEarningsPerHour: number;
+}
+
 export interface GridProps {
   full?: boolean;
   userPreview?: {
@@ -34,6 +41,7 @@ export interface GridProps {
     dni?: string;
   };
   projectsPreview?: ProjectItem[];
+  statisticsPreview?: StatisticsPreviewData;
 }
 
 export interface Props {
@@ -52,6 +60,7 @@ export interface Props {
     dni?: string;
   };
   projectsPreview?: ProjectItem[];
+  statisticsPreview?: StatisticsPreviewData;
 }
 
 export interface PropsGridFull {
@@ -65,4 +74,5 @@ export interface PropsGridFull {
     dni?: string;
   };
   projectsPreview?: ProjectItem[];
+  statisticsPreview?: StatisticsPreviewData;
 }

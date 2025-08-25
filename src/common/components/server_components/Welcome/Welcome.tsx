@@ -1,7 +1,7 @@
-import { WelcomeGrid, WelcomeHeader } from '../../client_components/WelcomeUI/Delivery';
+import WelcomeWithNavigation from '../../client_components/WelcomeUI/Delivery/components/WelcomeWithNavigation';
 
 import type { ProfileClientProps } from '../../client_components/ProfileUI/Delivery/interface'
-import type { ProjectItem } from '../../client_components/WelcomeUI/Delivery/interface'
+import type { ProjectItem, StatisticsPreviewData } from '../../client_components/WelcomeUI/Delivery/interface'
 import { cookies } from 'next/headers'
 import Service from '@/service/src'
 
@@ -10,6 +10,8 @@ export default async function WelcomeServer() {
   const abort = new AbortController()
   let userPreview = undefined;
   let projectsPreview: ProjectItem[] = [];
+  let statisticsPreview: StatisticsPreviewData | undefined = undefined;
+  let fullStatisticsData = undefined;
   
   try {
     const cookieStore = cookies()
@@ -48,7 +50,7 @@ export default async function WelcomeServer() {
       const projectsArray = projectsData.content;
       
       // Mapear los proyectos al formato necesario para la preview
-      projectsPreview = projectsArray.map(project => ({
+      projectsPreview = projectsArray.map((project: any) => ({
         id: project.id,
         name: project.name, // Ya viene como 'name' del backend
         title: project.name, // Usar 'name' como título también
@@ -59,15 +61,84 @@ export default async function WelcomeServer() {
     } else {
       console.log('❌ No se obtuvieron proyectos o el formato no es el esperado');
     }
+
+    // Crear datos de estadísticas de ejemplo basados en los proyectos
+    let fullStatisticsData = undefined;
+    if (projectsPreview.length > 0) {
+      const completedProjects = projectsPreview.filter(p => p.status === 'TERMINADO');
+      const inProgressProjects = projectsPreview.filter(p => p.status === 'EN_PROGRESO');
+      
+      statisticsPreview = {
+        monthlyEarnings: completedProjects.length * 1200, // Ejemplo: 1200€ por proyecto completado
+        pendingEarnings: inProgressProjects.length * 1500, // Ejemplo: 1500€ por proyecto en progreso
+        totalTimeWorked: `${projectsPreview.length * 80}h`, // Ejemplo: 80h por proyecto
+        avgEarningsPerHour: 15.5 // Ejemplo: 15.5€/hora
+      };
+
+      // Datos completos para la vista de estadísticas
+      fullStatisticsData = {
+        monthlyEarnings: {
+          total: completedProjects.length * 1200,
+          projects: completedProjects.map(p => ({
+            id: p.id,
+            name: p.name,
+            earnings: 1200,
+            completedDate: "2025-08-15"
+          }))
+        },
+        pendingEarnings: {
+          total: inProgressProjects.length * 1500,
+          projects: inProgressProjects.map(p => ({
+            id: p.id,
+            name: p.name,
+            estimatedEarnings: 1500,
+            progress: 65
+          }))
+        },
+        timeWorked: projectsPreview.map(p => ({
+          projectId: p.id,
+          projectName: p.name,
+          totalHours: 80,
+          totalMinutes: 30
+        })),
+        earningsVsTime: projectsPreview.map(p => ({
+          projectId: p.id,
+          projectName: p.name,
+          earnings: p.status === 'TERMINADO' ? 1200 : 0,
+          hoursWorked: 80.5,
+          earningsPerHour: p.status === 'TERMINADO' ? 14.9 : 0
+        }))
+      };
+    } else {
+      statisticsPreview = {
+        monthlyEarnings: 0,
+        pendingEarnings: 0,
+        totalTimeWorked: '0h',
+        avgEarningsPerHour: 0
+      };
+
+      fullStatisticsData = {
+        monthlyEarnings: { total: 0, projects: [] },
+        pendingEarnings: { total: 0, projects: [] },
+        timeWorked: [],
+        earningsVsTime: []
+      };
+    }
   } catch (e) {
+    console.error('Error fetching welcome data:', e);
     userPreview = undefined;
     projectsPreview = [];
+    statisticsPreview = undefined;
+    fullStatisticsData = { monthlyEarnings: { total: 0, projects: [] }, pendingEarnings: { total: 0, projects: [] }, timeWorked: [], earningsVsTime: [] };
   }
   
   return (
-    <main className="welcome-page-full">
-      <WelcomeHeader />
-      <WelcomeGrid full userPreview={userPreview} projectsPreview={projectsPreview} />
-    </main>
+    <WelcomeWithNavigation
+      userPreview={userPreview}
+      projectsPreview={projectsPreview}
+      statisticsPreview={statisticsPreview}
+      initialProjects={projectsPreview}
+      statisticsData={fullStatisticsData}
+    />
   )
 }

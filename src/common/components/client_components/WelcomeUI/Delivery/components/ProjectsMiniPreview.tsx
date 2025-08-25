@@ -39,73 +39,78 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
   if (!projects || projects.length === 0) {
     console.log('⚠️ Mostrando empty state - No hay proyectos');
     return (
-      <div className="projects-preview-outer">
-        <Card className="profile-card" bordered={false} bodyStyle={{ padding: 0 }}>
-          <div className="projects-preview-inner">
-            <div style={{ padding: '12px' }}>
+      <div className="projects-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <div className="projects-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+            <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Empty 
-                image={<ProjectOutlined style={{ fontSize: 32, color: '#d1d5db' }} />}
+                image={<ProjectOutlined style={{ fontSize: 48, color: '#d1d5db' }} />}
                 description="No hay proyectos aún"
                 style={{ margin: 0 }}
               />
             </div>
-            <div className="profile-preview-welcome">
+            <div className="profile-preview-welcome" style={{ 
+              marginTop: '16px',
+              padding: '12px',
+              textAlign: 'center',
+              borderTop: '1px solid #f0f0f0',
+              backgroundColor: '#fafafa',
+              borderRadius: '6px'
+            }}>
               ¡Crea tu primer proyecto!
             </div>
           </div>
-        </Card>
       </div>
     )
   }
 
   return (
-    <div className="projects-preview-outer">
-      <Card className="profile-card" bordered={false} bodyStyle={{ padding: 0 }}>
-        <div className="projects-preview-inner">
-          <div style={{ padding: '12px' }}>
+    <div className="projects-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <div className="projects-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+          <div style={{ flex: 1, overflow: 'auto' }}>
             <List
               size="small"
               dataSource={previewProjects}
               renderItem={(project) => (
-                <List.Item style={{ padding: '8px 0', borderBottom: 'none' }}>
+                <List.Item style={{ padding: '12px 0', borderBottom: '1px solid #f5f5f5' }}>
                   <div style={{ width: '100%' }}>
                     <div style={{ 
                       display: 'flex', 
                       justifyContent: 'space-between', 
                       alignItems: 'flex-start',
-                      marginBottom: 4 
+                      marginBottom: 6 
                     }}>
                       <span style={{ 
                         fontWeight: 600, 
                         color: '#374151',
-                        fontSize: 13,
-                        lineHeight: 1.2
+                        fontSize: 14,
+                        lineHeight: 1.3
                       }}>
                         {project.name}
                       </span>
                       <Tag 
                         color={statusColors[project.status]} 
-                        style={{ fontSize: 10, lineHeight: 1, margin: 0 }}
+                        style={{ fontSize: 11, lineHeight: 1.2, margin: 0 }}
                       >
                         {statusLabels[project.status]}
                       </Tag>
                     </div>
                     <div style={{ 
                       color: '#6b7280', 
-                      fontSize: 11,
+                      fontSize: 12,
                       display: '-webkit-box',
-                      WebkitLineClamp: 1,
+                      WebkitLineClamp: 2,
                       WebkitBoxOrient: 'vertical',
                       overflow: 'hidden',
-                      textOverflow: 'ellipsis'
+                      textOverflow: 'ellipsis',
+                      lineHeight: 1.4,
+                      marginBottom: 4
                     }}>
                       {project.description}
                     </div>
                     {project.type && (
                       <div style={{ 
                         color: '#9ca3af', 
-                        fontSize: 10,
-                        marginTop: 2,
+                        fontSize: 11,
                         display: 'flex',
                         alignItems: 'center',
                         gap: 4
@@ -123,9 +128,9 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
               <div style={{ 
                 textAlign: 'center', 
                 color: '#6b7280', 
-                fontSize: 11,
-                marginTop: 8,
-                paddingTop: 8,
+                fontSize: 12,
+                marginTop: 12,
+                paddingTop: 12,
                 borderTop: '1px solid #f3f4f6'
               }}>
                 +{projects.length - 3} proyectos más
@@ -133,11 +138,17 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
             )}
           </div>
 
-          <div className="profile-preview-welcome">
+          <div className="profile-preview-welcome" style={{ 
+            marginTop: '16px',
+            padding: '12px',
+            textAlign: 'center',
+            borderTop: '1px solid #f0f0f0',
+            backgroundColor: '#fafafa',
+            borderRadius: '6px'
+          }}>
             {projects.length === 1 ? '1 proyecto' : `${projects.length} proyectos`}
           </div>
         </div>
-      </Card>
     </div>
   )
 }

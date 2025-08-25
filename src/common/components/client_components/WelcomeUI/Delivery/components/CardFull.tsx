@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { UserOutlined, ProjectOutlined, BarChartOutlined, FieldTimeOutlined, CompressOutlined, ExpandOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import ProfileMiniPreview from './ProfileMiniPreview';
 import ProjectsMiniPreview from './ProjectsMiniPreview';
+import StatisticsMiniPreview from './StatisticsMiniPreview';
 import type { Props } from '../interface';
 
 const icons: Record<string, React.ReactNode> = {
@@ -12,8 +13,8 @@ const icons: Record<string, React.ReactNode> = {
   time: <FieldTimeOutlined className="welcome-card-icon-top" />,
 };
 
-export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview }: Readonly<Props>) {
-  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview });
+export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview, statisticsPreview }: Readonly<Props>) {
+  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview, statisticsPreview });
   
   const ref = useRef<HTMLButtonElement | null>(null);
   const [dimsStyle, setDimsStyle] = useState<Record<string, string>>({});
@@ -82,6 +83,13 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
       {projectsPreview && title === 'Proyectos' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <ProjectsMiniPreview projects={projectsPreview} />
+        </div>
+      )}
+      
+      {/* Previsualización de estadísticas - solo en la tarjeta de estadísticas */}
+      {statisticsPreview && title === 'Estadisticas' && (
+        <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <StatisticsMiniPreview statisticsData={statisticsPreview} />
         </div>
       )}
       
