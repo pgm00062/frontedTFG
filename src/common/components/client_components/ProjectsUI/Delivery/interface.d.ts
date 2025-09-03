@@ -13,6 +13,7 @@ export interface ProjectsContainerProps {
   initialProjects: ProjectItem[] | null;
   searchTerm?: string;
   onCreate?: (values: Record<string, any>) => Promise<any>
+  onSearchChange?: (searchTerm: string) => Promise<void>
 }
 
 export interface getProjectIdProps {
@@ -20,7 +21,7 @@ export interface getProjectIdProps {
 }
 
 export interface ProjectSearchProps {
-  onSearch: (searchTerm: string) => Promise<any[]>
+  onSearch: (searchTerm: string) => Promise<any[] | void>
   initialSearchTerm?: string
 }
 

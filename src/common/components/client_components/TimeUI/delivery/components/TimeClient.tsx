@@ -8,7 +8,7 @@ import type { TimeClientProps } from '../interface';
 
 const { Title } = Typography;
 
-const TimeClient: React.FC<TimeClientProps> = ({ projects }) => {
+const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
   const [loading, setLoading] = useState(false);
 
   const handleStartTime = async (projectId: number, description?: string) => {
@@ -18,6 +18,10 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects }) => {
       
       if (result.success) {
         message.success('Sesión de tiempo iniciada correctamente');
+        // Refrescar datos después de iniciar
+        if (onTimeUpdate) {
+          await onTimeUpdate();
+        }
       } else {
         message.error(`Error: ${result.error}`);
       }
@@ -48,6 +52,10 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects }) => {
       
       if (result.success) {
         message.success('Sesión de tiempo finalizada correctamente');
+        // Refrescar datos después de finalizar
+        if (onTimeUpdate) {
+          await onTimeUpdate();
+        }
       } else {
         message.error(`Error: ${result.error}`);
       }

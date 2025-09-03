@@ -23,8 +23,9 @@ export async function startTimeSession(projectId: number, description?: string) 
       headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
     });
 
-    // Revalidar la página para obtener datos frescos
+    // Revalidar las páginas para obtener datos frescos
     revalidatePath('/time');
+    revalidatePath('/welcome');
     
     return { success: true, data: response };
   } catch (error) {
@@ -59,8 +60,9 @@ export async function endTimeSession(sessionId: number) {
 
     console.log('✅ Sesión finalizada correctamente:', response);
 
-    // Revalidar la página para obtener datos frescos
+    // Revalidar las páginas para obtener datos frescos
     revalidatePath('/time');
+    revalidatePath('/welcome');
     
     return { success: true, data: response };
   } catch (error) {

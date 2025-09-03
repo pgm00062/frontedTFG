@@ -15,16 +15,13 @@ interface WelcomeWithNavigationProps {
   };
   projectsPreview?: ProjectItem[];
   statisticsPreview?: StatisticsPreviewData;
-  initialProjects?: any[];
-  statisticsData?: any;
+  // Props removidas para lazy loading: initialProjects, statisticsData, initialInvoices
 }
 
 const WelcomeWithNavigation: React.FC<WelcomeWithNavigationProps> = ({
   userPreview,
   projectsPreview,
-  statisticsPreview,
-  initialProjects = [],
-  statisticsData
+  statisticsPreview
 }) => {
   const [activeTab, setActiveTab] = useState('inicio');
 
@@ -42,8 +39,6 @@ const WelcomeWithNavigation: React.FC<WelcomeWithNavigationProps> = ({
           userPreview={userPreview}
           projectsPreview={projectsPreview}
           statisticsPreview={statisticsPreview}
-          initialProjects={initialProjects}
-          statisticsData={statisticsData}
         />
       </div>
     </main>

@@ -22,6 +22,7 @@ export interface TimeStartRequest {
 
 export interface TimeClientProps {
   projects: ProjectTimeInfo[];
+  onTimeUpdate?: () => Promise<void>;
 }
 
 export interface ProjectTimeControlProps {

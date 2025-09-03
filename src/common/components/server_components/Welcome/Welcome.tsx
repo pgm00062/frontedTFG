@@ -11,7 +11,6 @@ export default async function WelcomeServer() {
   let userPreview = undefined;
   let projectsPreview: ProjectItem[] = [];
   let statisticsPreview: StatisticsPreviewData | undefined = undefined;
-  let fullStatisticsData = undefined;
   
   try {
     const cookieStore = cookies()
@@ -45,7 +44,7 @@ export default async function WelcomeServer() {
 
     console.log('📊 Datos de proyectos recibidos:', projectsData);
 
-    if (projectsData && projectsData.content && Array.isArray(projectsData.content)) {
+    if (projectsData?.content && Array.isArray(projectsData.content)) {
       // Los proyectos están en projectsData.content debido a la paginación
       const projectsArray = projectsData.content;
       
@@ -63,7 +62,6 @@ export default async function WelcomeServer() {
     }
 
     // Crear datos de estadísticas de ejemplo basados en los proyectos
-    let fullStatisticsData = undefined;
     if (projectsPreview.length > 0) {
       const completedProjects = projectsPreview.filter(p => p.status === 'TERMINADO');
       const inProgressProjects = projectsPreview.filter(p => p.status === 'EN_PROGRESO');
@@ -74,41 +72,6 @@ export default async function WelcomeServer() {
         totalTimeWorked: `${projectsPreview.length * 80}h`, // Ejemplo: 80h por proyecto
         avgEarningsPerHour: 15.5 // Ejemplo: 15.5€/hora
       };
-
-      // Datos completos para la vista de estadísticas
-      fullStatisticsData = {
-        monthlyEarnings: {
-          total: completedProjects.length * 1200,
-          projects: completedProjects.map(p => ({
-            id: p.id,
-            name: p.name,
-            earnings: 1200,
-            completedDate: "2025-08-15"
-          }))
-        },
-        pendingEarnings: {
-          total: inProgressProjects.length * 1500,
-          projects: inProgressProjects.map(p => ({
-            id: p.id,
-            name: p.name,
-            estimatedEarnings: 1500,
-            progress: 65
-          }))
-        },
-        timeWorked: projectsPreview.map(p => ({
-          projectId: p.id,
-          projectName: p.name,
-          totalHours: 80,
-          totalMinutes: 30
-        })),
-        earningsVsTime: projectsPreview.map(p => ({
-          projectId: p.id,
-          projectName: p.name,
-          earnings: p.status === 'TERMINADO' ? 1200 : 0,
-          hoursWorked: 80.5,
-          earningsPerHour: p.status === 'TERMINADO' ? 14.9 : 0
-        }))
-      };
     } else {
       statisticsPreview = {
         monthlyEarnings: 0,
@@ -116,20 +79,12 @@ export default async function WelcomeServer() {
         totalTimeWorked: '0h',
         avgEarningsPerHour: 0
       };
-
-      fullStatisticsData = {
-        monthlyEarnings: { total: 0, projects: [] },
-        pendingEarnings: { total: 0, projects: [] },
-        timeWorked: [],
-        earningsVsTime: []
-      };
     }
   } catch (e) {
     console.error('Error fetching welcome data:', e);
     userPreview = undefined;
     projectsPreview = [];
     statisticsPreview = undefined;
-    fullStatisticsData = { monthlyEarnings: { total: 0, projects: [] }, pendingEarnings: { total: 0, projects: [] }, timeWorked: [], earningsVsTime: [] };
   }
   
   return (
@@ -137,8 +92,6 @@ export default async function WelcomeServer() {
       userPreview={userPreview}
       projectsPreview={projectsPreview}
       statisticsPreview={statisticsPreview}
-      initialProjects={projectsPreview}
-      statisticsData={fullStatisticsData}
     />
   )
 }

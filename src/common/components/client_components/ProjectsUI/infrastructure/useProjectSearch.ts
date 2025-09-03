@@ -1,22 +1,19 @@
 import { useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 
 export function useProjectSearch() {
-  const router = useRouter()
-
-  const searchProjects = useCallback(async (searchTerm: string) => {
+  const searchProjects = useCallback(async (searchTerm: string, onSearchResults?: (results: any[]) => void) => {
     if (!searchTerm || searchTerm.trim() === '') {
-      // Limpiar search params si no hay término
-      router.push('/projects')
+      // Si no hay término, retornar array vacío para mostrar todos los proyectos
+      if (onSearchResults) {
+        onSearchResults([]);
+      }
       return []
     }
 
-    // Actualizar URL con término de búsqueda
-    router.push(`/projects?search=${encodeURIComponent(searchTerm.trim())}`)
-    
-    // Retornar empty array - la búsqueda real se hace en el server component
-    return []
-  }, [router])
+    // En lugar de redirigir, devolvemos el término para que sea manejado localmente
+    // El componente padre se encargará de hacer la búsqueda usando getProjectsAction
+    return searchTerm.trim();
+  }, [])
 
   return { searchProjects }
 }

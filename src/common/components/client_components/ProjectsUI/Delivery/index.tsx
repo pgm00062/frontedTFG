@@ -8,7 +8,7 @@ import type { ProjectsContainerProps } from './interface'
 import useProjectsContainer, { useProjectsContainerWithServerAction } from '../infrastructure/ProjectsContainerOperation'
 import { useProjectSearch } from '../infrastructure/useProjectSearch'
 
-export default function ProjectsContainer({ initialProjects, searchTerm, onCreate }: ProjectsContainerProps) {
+export default function ProjectsContainer({ initialProjects, searchTerm, onCreate, onSearchChange }: ProjectsContainerProps) {
   // Si viene onCreate (Server Action), usar el hook correspondiente
   // Si no, usar el hook con fetch directo
   const serverActionHook = useProjectsContainerWithServerAction(initialProjects, onCreate)
@@ -18,6 +18,9 @@ export default function ProjectsContainer({ initialProjects, searchTerm, onCreat
   // Seleccionar el hook apropiado
   const { projects, open, setOpen, handleCreate } = onCreate ? serverActionHook : apiRouteHook
 
+  // Función de búsqueda que usa onSearchChange si está disponible
+  const handleSearch = onSearchChange || searchProjects;
+
   return (
     <div style={{ position: 'relative', paddingTop: 56 }}>
       {/* fixed button top-right */}
@@ -26,7 +29,7 @@ export default function ProjectsContainer({ initialProjects, searchTerm, onCreat
       </div>
       
       {/* Search component */}
-      <ProjectSearch onSearch={searchProjects} initialSearchTerm={searchTerm} />
+      <ProjectSearch onSearch={handleSearch} initialSearchTerm={searchTerm} />
       
       <Divider style={{ margin: '16px 0' }} />
       
