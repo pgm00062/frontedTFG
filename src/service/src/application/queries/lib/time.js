@@ -1,4 +1,5 @@
 import manageRequest from '@/domain/manageRequest';
+import { get } from 'http';
 
 const timeUseCases = {
   startTime: (signal, values, token, headers) => {
@@ -57,6 +58,45 @@ const timeUseCases = {
     return manageRequest(
       signal,
       'listTimeSessions',
+      values,
+      'query',
+      'normal',
+      'get',
+      token,
+      undefined,
+      headers,
+    );
+  },
+  pauseTime: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'pauseTime',
+      values,
+      'body',
+      'normal',
+      'post',
+      token,
+      undefined,
+      headers,
+    );
+  },
+  resumeTime: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'resumeTime',
+      values,
+      'body',
+      'normal',
+      'post',
+      token,
+      undefined,
+      headers,
+    );
+  },
+  getTotalTimeDay: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'totalTimeDay',
       values,
       'query',
       'normal',

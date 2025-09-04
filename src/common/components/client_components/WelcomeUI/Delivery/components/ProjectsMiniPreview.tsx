@@ -33,7 +33,6 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
   console.log('🎯 ProjectsMiniPreview recibió:', projects);
   console.log('🔢 Número de proyectos:', projects?.length || 0);
   
-  // Mostrar solo los primeros 3 proyectos para la preview
   const previewProjects = projects.slice(0, 3)
 
   if (!projects || projects.length === 0) {

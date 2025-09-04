@@ -1,3 +1,5 @@
+import { get } from "http";
+
 export const USER_METHODS = {
   login: (response) => {
     // Exponer headers para que una API Route pueda leer Set-Cookie si fuera necesario
@@ -45,6 +47,10 @@ export const USER_METHODS = {
     return response.data;
   },
   deleteProject: (response) => {
+    return response.data;
+  },
+
+  getLastThreeProjects: (response) => {
     return response.data;
   },
 

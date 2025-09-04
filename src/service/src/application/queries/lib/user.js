@@ -1,4 +1,5 @@
 import manageRequest from '@/domain/manageRequest';
+import { get } from 'http';
 
 const userUseCases = {
   login: (signal, values, token) => {
@@ -265,5 +266,19 @@ const userUseCases = {
       throw error;
     }
   },
+
+  getLastThreeProjects: (signal, values, token, headers) => {
+    return manageRequest(
+      signal,
+      'getLastThreeProjects',
+      values,
+      'url',
+      'normal',
+      'get',
+      token,
+      undefined,
+      headers,
+    );
+  }
 };
 export default userUseCases;

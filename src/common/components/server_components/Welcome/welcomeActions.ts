@@ -174,3 +174,29 @@ export async function getTimeDataAction(): Promise<ProjectTimeInfo[]> {
     return [];
   }
 }
+
+// Server Action para obtener el tiempo total trabajado en el día
+export async function getDailyTotalTimeAction() {
+  try {
+    const cookieStore = cookies();
+    const jsession = cookieStore.get('JSESSIONID')?.value;
+    const authToken = cookieStore.get('AUTH_TOKEN')?.value;
+    const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken;
+
+    // Obtener la fecha actual en formato YYYY-MM-DD
+    const today = new Date();
+    const dateString = today.toISOString().split('T')[0]; // Formato: 2025-09-04
+
+    const dailyTime = await Service.getCases('getTotalTimeDay', {
+      signal: new AbortController().signal,
+      endPointData: { date: dateString },
+      token: authHeader || undefined,
+      headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+    });
+
+    return dailyTime;
+  } catch (error) {
+    console.error('Error obteniendo tiempo total del día:', error);
+    return { totalSeconds: 0 };
+  }
+}

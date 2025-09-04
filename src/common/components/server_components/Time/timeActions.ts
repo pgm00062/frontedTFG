@@ -73,3 +73,67 @@ export async function endTimeSession(sessionId: number) {
     };
   }
 }
+
+export async function pauseTimeSession() {
+  const cookieStore = cookies();
+  const jsession = cookieStore.get('JSESSIONID')?.value;
+  const authToken = cookieStore.get('AUTH_TOKEN')?.value;
+  const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken;
+
+  try {
+    console.log('⏸️ Pausando sesión activa del usuario');
+
+    const response = await Service.getCases('pauseTime', {
+      signal: new AbortController().signal,
+      endPointData: {},
+      token: authHeader || undefined,
+      headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+    });
+
+    console.log('✅ Sesión pausada correctamente:', response);
+
+    // Revalidar las páginas para obtener datos frescos
+    revalidatePath('/time');
+    revalidatePath('/welcome');
+    
+    return { success: true, data: response };
+  } catch (error) {
+    console.error('Error al pausar sesión de tiempo:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Error desconocido' 
+    };
+  }
+}
+
+export async function resumeTimeSession() {
+  const cookieStore = cookies();
+  const jsession = cookieStore.get('JSESSIONID')?.value;
+  const authToken = cookieStore.get('AUTH_TOKEN')?.value;
+  const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken;
+
+  try {
+    console.log('▶️ Reanudando sesión pausada del usuario');
+
+    const response = await Service.getCases('resumeTime', {
+      signal: new AbortController().signal,
+      endPointData: {},
+      token: authHeader || undefined,
+      headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+    });
+
+    console.log('✅ Sesión reanudada correctamente:', response);
+
+    // Revalidar las páginas para obtener datos frescos
+    revalidatePath('/time');
+    revalidatePath('/welcome');
+    
+    return { success: true, data: response };
+  } catch (error) {
+    console.error('Error al reanudar sesión de tiempo:', error);
+    return { 
+      success: false, 
+      error: error instanceof Error ? error.message : 'Error desconocido' 
+    };
+  }
+}

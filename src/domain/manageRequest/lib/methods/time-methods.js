@@ -14,4 +14,13 @@ export const TIME_METHODS = {
   listTimeSessions: (response) => {
     return response.data;
   },
+  pauseTime: (response) => {
+    return response.data;
+  },
+  resumeTime: (response) => {
+    return response.data;
+  },
+  totalTimeDay: (response) => {
+    return response.data;
+  }
 };

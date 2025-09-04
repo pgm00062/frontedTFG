@@ -21,7 +21,7 @@ export interface getProjectIdProps {
 }
 
 export interface ProjectSearchProps {
-  onSearch: (searchTerm: string) => Promise<any[] | void>
+  onSearch: (searchTerm: string) => Promise<void>
   initialSearchTerm?: string
 }
 

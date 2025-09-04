@@ -34,19 +34,19 @@ export default async function WelcomeServer() {
       console.log('❌ No se obtuvo userData');
     }
 
-    // Obtener proyectos del usuario
-    const projectsData = await Service.getCases('listProjects', {
+    // Obtener los últimos tres proyectos del usuario (optimizado para preview)
+    const projectsData = await Service.getCases('getLastThreeProjects', {
       signal: abort.signal,
       endPointData: {},
       token: authHeader || undefined,
       headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
     }) as any
 
-    console.log('📊 Datos de proyectos recibidos:', projectsData);
+    console.log('📊 Últimos tres proyectos recibidos:', projectsData);
 
-    if (projectsData?.content && Array.isArray(projectsData.content)) {
-      // Los proyectos están en projectsData.content debido a la paginación
-      const projectsArray = projectsData.content;
+    if (projectsData && Array.isArray(projectsData)) {
+      // getLastThreeProjects devuelve directamente un array, no paginado
+      const projectsArray = projectsData;
       
       // Mapear los proyectos al formato necesario para la preview
       projectsPreview = projectsArray.map((project: any) => ({

@@ -28,6 +28,8 @@ export const USER_QUERIES = {
     `http://localhost:8080/projects/update/${id}`,
   deleteProject: (id) =>
     `http://localhost:8080/projects/delete/${id}`,
+  getLastThreeProjects: () =>
+    `http://localhost:8080/projects/getLastThree`,
 
 };
 
@@ -43,5 +45,5 @@ export const USER_ERROR_MESSAGES = {
   updateProjectStatus: 'Error al actualizar el estado del proyecto',
   updateProject: 'Error al actualizar el proyecto',
   deleteProject: 'Error al eliminar el proyecto',
-  startTime: 'Error al iniciar el tiempo',
+  getLastThreeProjects: 'Error al obtener los últimos tres proyectos',
 };

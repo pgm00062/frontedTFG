@@ -1,15 +1,32 @@
 'use client'
-import React, { useState } from 'react';
-import { Typography, Space, Empty, message } from 'antd';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Typography, Space, Empty, message, Card, Statistic } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import ProjectTimeControl from './ProjectTimeControl';
-import { startTimeSession, endTimeSession } from '@/common/components/server_components/Time/timeActions';
+import { startTimeSession, endTimeSession, pauseTimeSession, resumeTimeSession } from '@/common/components/server_components/Time/timeActions';
+import { getDailyTotalTimeAction } from '@/common/components/server_components/Welcome/welcomeActions';
 import type { TimeClientProps } from '../interface';
 
 const { Title } = Typography;
 
 const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
   const [loading, setLoading] = useState(false);
+  const [dailyTime, setDailyTime] = useState<string>('00:00:00');
+
+  const loadDailyTotalTime = useCallback(async () => {
+    try {
+      const result = await getDailyTotalTimeAction();
+      if (result && typeof result === 'object' && 'success' in result && result.success && 'data' in result && result.data) {
+        setDailyTime(result.data as string);
+      }
+    } catch (error) {
+      console.error('Error al cargar tiempo diario:', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadDailyTotalTime();
+  }, [loadDailyTotalTime]);
 
   const handleStartTime = async (projectId: number, description?: string) => {
     setLoading(true);
@@ -22,6 +39,8 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
         if (onTimeUpdate) {
           await onTimeUpdate();
         }
+        // Actualizar tiempo total del día
+        await loadDailyTotalTime();
       } else {
         message.error(`Error: ${result.error}`);
       }
@@ -33,13 +52,49 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
     }
   };
 
-  const handleStopTime = async (sessionId: number) => {
+  const handleStopTime = async () => {
     setLoading(true);
     try {
-      // TODO: Implementar server action para stop
-      message.info('Funcionalidad de pausar en desarrollo');
+      const result = await pauseTimeSession();
+      
+      if (result.success) {
+        message.success('Sesión de tiempo pausada correctamente');
+        // Refrescar datos después de pausar
+        if (onTimeUpdate) {
+          await onTimeUpdate();
+        }
+        // Actualizar tiempo total del día
+        await loadDailyTotalTime();
+      } else {
+        message.error(`Error: ${result.error}`);
+      }
     } catch (error) {
       message.error('Error al pausar la sesión');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResumeTime = async () => {
+    setLoading(true);
+    try {
+      const result = await resumeTimeSession();
+      
+      if (result.success) {
+        message.success('Sesión de tiempo reanudada correctamente');
+        // Refrescar datos después de reanudar
+        if (onTimeUpdate) {
+          await onTimeUpdate();
+        }
+        // Actualizar tiempo total del día
+        await loadDailyTotalTime();
+      } else {
+        message.error(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      message.error('Error al reanudar la sesión de tiempo');
+      console.error('Error:', error);
     } finally {
       setLoading(false);
     }
@@ -56,6 +111,8 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
         if (onTimeUpdate) {
           await onTimeUpdate();
         }
+        // Actualizar tiempo total del día
+        await loadDailyTotalTime();
       } else {
         message.error(`Error: ${result.error}`);
       }
@@ -83,6 +140,16 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
+        {/* Estadísticas de tiempo diario */}
+        <Card>
+          <Statistic
+            title="Tiempo trabajado hoy"
+            value={dailyTime}
+            prefix={<ClockCircleOutlined />}
+            valueStyle={{ color: '#1890ff' }}
+          />
+        </Card>
+
         <div>
           <Title level={2}>Registro de Tiempo</Title>
           <Typography.Paragraph type="secondary">
@@ -98,6 +165,7 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
               loading={loading}
               onStartTime={handleStartTime}
               onStopTime={handleStopTime}
+              onResumeTime={handleResumeTime}
               onCompleteTime={handleCompleteTime}
             />
           ))}

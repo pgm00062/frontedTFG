@@ -5,6 +5,7 @@ export interface TimeSession {
   projectId: number;
   userId: number;
   isActive: boolean;
+  isPaused?: boolean;
   description?: string;
 }
 
@@ -29,14 +30,16 @@ export interface ProjectTimeControlProps {
   project: ProjectTimeInfo;
   loading?: boolean;
   onStartTime: (projectId: number, description?: string) => void;
-  onStopTime: (sessionId: number) => void;
+  onStopTime: () => void;
+  onResumeTime: () => void;
   onCompleteTime: (sessionId: number) => void;
 }
 
 export interface TimeControlButtonsProps {
   project: ProjectTimeInfo;
   onStartTime: (projectId: number, description?: string) => void;
-  onStopTime: (sessionId: number) => void;
+  onStopTime: () => void;
+  onResumeTime: () => void;
   onCompleteTime: (sessionId: number) => void;
 }
 
