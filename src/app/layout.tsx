@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import "antd/dist/reset.css";
 import Sidebar from '@/common/components/server_components/Sidebar/Sidebar'
+import ProfileButton from '@/common/components/client_components/ProfileButton/ProfileButton'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Sidebar />
+        <ProfileButton />
         {children}
       </body>
     </html>

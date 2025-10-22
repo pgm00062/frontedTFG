@@ -65,7 +65,10 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ initialMode = 'login' }) 
       })
       
       console.log('Register successful:', response)
-      // Aquí podrías redirigir al usuario o actualizar el estado global
+      // Redirigir al login después del registro exitoso
+      setTimeout(() => {
+        router.push('/register-login')
+      }, 1500) // Pequeño delay para mostrar el mensaje
       
     } catch (err: any) {
       console.error('Register error:', err)
@@ -116,8 +119,7 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ initialMode = 'login' }) 
     <div className="auth-page">
       <div className="auth-wrapper">
         <div className="auth-header">
-          <Title level={1} className="auth-title">TFG Freelance</Title>
-          <Paragraph className="auth-subtitle">Conecta con los mejores profesionales</Paragraph>
+          <Title level={1} className="auth-title">FreeManage</Title>
         </div>
 
         <Card className="auth-card">
@@ -128,12 +130,6 @@ const AuthContainer: React.FC<AuthContainerProps> = ({ initialMode = 'login' }) 
             className="auth-tabs"
           />
         </Card>
-
-        <div className="auth-footer">
-          <Paragraph style={{ margin: 0, fontSize: '0.9rem' }}>
-            © 2024 TFG Freelance App. Todos los derechos reservados.
-          </Paragraph>
-        </div>
       </div>
     </div>
   )

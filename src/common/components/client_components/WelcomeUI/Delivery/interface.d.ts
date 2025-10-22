@@ -31,6 +31,23 @@ export interface StatisticsPreviewData {
   avgEarningsPerHour: number;
 }
 
+export interface InvoiceItem {
+  id: number;
+  invoiceNumber: string;
+  amount: number;
+  issueDate: string;
+  status: 'PENDIENTE' | 'PAGADA' | 'VENCIDA';
+  projectName?: string;
+}
+
+export interface TimeEntry {
+  id: number;
+  projectName: string;
+  totalTime: string;
+  status: 'ACTIVO' | 'PAUSADO' | 'FINALIZADO';
+  startTime?: string;
+}
+
 export interface GridProps {
   full?: boolean;
   userPreview?: {
@@ -42,6 +59,8 @@ export interface GridProps {
   };
   projectsPreview?: ProjectItem[];
   statisticsPreview?: StatisticsPreviewData;
+  invoicesPreview?: InvoiceItem[];
+  timePreview?: TimeEntry[];
 }
 
 export interface Props {
@@ -61,6 +80,8 @@ export interface Props {
   };
   projectsPreview?: ProjectItem[];
   statisticsPreview?: StatisticsPreviewData;
+  invoicesPreview?: InvoiceItem[];
+  timePreview?: TimeEntry[];
 }
 
 export interface PropsGridFull {
@@ -75,4 +96,6 @@ export interface PropsGridFull {
   };
   projectsPreview?: ProjectItem[];
   statisticsPreview?: StatisticsPreviewData;
+  invoicesPreview?: InvoiceItem[];
+  timePreview?: TimeEntry[];
 }

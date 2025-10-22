@@ -1,13 +1,12 @@
 'use client'
 import { useState } from 'react'
 import Sidebar from '..'
-import ToggleButton from './ToggleButton'
 
 export default function SidebarContainer() {
   const [open, setOpen] = useState(false)
   return (
     <>
-      <ToggleButton onClick={() => setOpen(true)} isOpen={open} />
+      {/* El botón toggle se ha eliminado - ahora usamos menú horizontal */}
       <Sidebar isOpen={open} onClose={() => setOpen(false)} />
     </>
   )

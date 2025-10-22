@@ -1,12 +1,24 @@
 'use client'
-import { Form, Input, Button, Card, Typography, Alert } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined, IdcardOutlined, EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons'
+import { useState, useEffect } from 'react'
+import { Form, Input, Button, Card, Typography, Alert, Modal, Spin } from 'antd'
+import { UserOutlined, LockOutlined, MailOutlined, IdcardOutlined, EyeInvisibleOutlined, EyeTwoTone, LoadingOutlined } from '@ant-design/icons'
 import type { RegisterFormProps } from '../interface'
 
 const { Title } = Typography
 
 const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading = false, error }) => {
   const [form] = Form.useForm()
+  const [showRedirectModal, setShowRedirectModal] = useState(false)
+  const [wasLoading, setWasLoading] = useState(false)
+
+  // Detectar cuando cambia de loading a no loading sin error (éxito)
+  useEffect(() => {
+    if (wasLoading && !isLoading && !error) {
+      // Registro exitoso
+      setShowRedirectModal(true)
+    }
+    setWasLoading(isLoading)
+  }, [isLoading, error, wasLoading])
 
   const handleSubmit = (values: {
     name: string
@@ -142,6 +154,24 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ onSubmit, isLoading = false
           </Button>
         </Form.Item>
       </Form>
+
+      <Modal
+        open={showRedirectModal}
+        footer={null}
+        closable={false}
+        centered
+        width={360}
+      >
+        <div style={{ textAlign: 'center', padding: '24px 0' }}>
+          <Spin indicator={<LoadingOutlined style={{ fontSize: 48, color: '#52c41a' }} spin />} />
+          <div style={{ marginTop: 24, fontSize: 16, fontWeight: 500, color: '#52c41a' }}>
+            ¡Registro exitoso!
+          </div>
+          <div style={{ marginTop: 12, fontSize: 14, color: '#666' }}>
+            Redirigiendo a inicio de sesión...
+          </div>
+        </div>
+      </Modal>
     </Card>
   )
 }

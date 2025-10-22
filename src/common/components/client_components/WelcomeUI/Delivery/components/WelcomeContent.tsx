@@ -25,6 +25,8 @@ interface WelcomeContentProps {
   };
   projectsPreview?: ProjectItem[];
   statisticsPreview?: StatisticsPreviewData;
+  invoicesPreview?: any[];
+  timePreview?: any[];
   // Removemos las props de datos iniciales para lazy loading
 }
 
@@ -32,7 +34,9 @@ const WelcomeContent: React.FC<WelcomeContentProps> = ({
   activeTab, 
   userPreview, 
   projectsPreview, 
-  statisticsPreview
+  statisticsPreview,
+  invoicesPreview,
+  timePreview
 }) => {
   // Estados para lazy loading
   const [isLoading, setIsLoading] = useState(false);
@@ -154,7 +158,9 @@ const WelcomeContent: React.FC<WelcomeContentProps> = ({
             full 
             userPreview={userPreview} 
             projectsPreview={projectsPreview} 
-            statisticsPreview={statisticsPreview} 
+            statisticsPreview={statisticsPreview}
+            invoicesPreview={invoicesPreview}
+            timePreview={timePreview}
           />
         );
       

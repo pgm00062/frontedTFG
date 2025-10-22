@@ -2,7 +2,7 @@ import React from 'react';
 import CardFull from './CardFull';
 import type { PropsGridFull } from '../interface';
 
-export default function GridFull({ expanded, onToggle, userPreview, projectsPreview, statisticsPreview }: Readonly<PropsGridFull>) {
+export default function GridFull({ expanded, onToggle, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview }: Readonly<PropsGridFull>) {
   return (
     <>
       {/* Overlay oscuro cuando hay una card expandida */}
@@ -16,13 +16,12 @@ export default function GridFull({ expanded, onToggle, userPreview, projectsPrev
       <section className="welcome-grid-full">
       <CardFull
         index={0}
-        className={`welcome-card--perfil ${expanded !== null && expanded !== 0 ? 'welcome-card-full--hidden' : ''} ${expanded === 0 ? 'welcome-card-full--expanded' : ''}`}
-        title="Perfil"
-        icon="user"
+        className={`welcome-card--facturas ${expanded !== null && expanded !== 0 ? 'welcome-card-full--hidden' : ''} ${expanded === 0 ? 'welcome-card-full--expanded' : ''}`}
+        title="Facturas"
+        icon="invoice"
         onToggle={() => onToggle(0)}
         expanded={expanded === 0}
-        href="/profile"
-        userPreview={userPreview}
+        invoicesPreview={invoicesPreview}
       />
       <CardFull
         index={1}
@@ -46,12 +45,12 @@ export default function GridFull({ expanded, onToggle, userPreview, projectsPrev
       />
       <CardFull
         index={3}
-        className={`welcome-card--time ${expanded !== null && expanded !== 3 ? 'welcome-card-full--hidden' : ''} ${expanded === 3 ? 'welcome-card-full--expanded' : ''}`}
-        title="Time"
+        className={`welcome-card--tiempo ${expanded !== null && expanded !== 3 ? 'welcome-card-full--hidden' : ''} ${expanded === 3 ? 'welcome-card-full--expanded' : ''}`}
+        title="Tiempo"
         icon="time"
         onToggle={() => onToggle(3)}
         expanded={expanded === 3}
-        href="/time"
+        timePreview={timePreview}
       />
     </section>
     </>

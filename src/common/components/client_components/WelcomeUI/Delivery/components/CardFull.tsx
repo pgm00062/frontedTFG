@@ -1,9 +1,10 @@
 import React, { useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UserOutlined, ProjectOutlined, BarChartOutlined, FieldTimeOutlined, CompressOutlined, ExpandOutlined, ArrowRightOutlined } from '@ant-design/icons';
-import ProfileMiniPreview from './ProfileMiniPreview';
+import { UserOutlined, ProjectOutlined, BarChartOutlined, FieldTimeOutlined, FileTextOutlined, CompressOutlined, ExpandOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import ProjectsMiniPreview from './ProjectsMiniPreview';
 import StatisticsMiniPreview from './StatisticsMiniPreview';
+import InvoicesMiniPreview from './InvoicesMiniPreview';
+import TimeMiniPreview from './TimeMiniPreview';
 import type { Props } from '../interface';
 
 const icons: Record<string, React.ReactNode> = {
@@ -11,10 +12,11 @@ const icons: Record<string, React.ReactNode> = {
   project: <ProjectOutlined className="welcome-card-icon-top" />,
   bar: <BarChartOutlined className="welcome-card-icon-top" />,
   time: <FieldTimeOutlined className="welcome-card-icon-top" />,
+  invoice: <FileTextOutlined className="welcome-card-icon-top" />,
 };
 
-export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview, statisticsPreview }: Readonly<Props>) {
-  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview, statisticsPreview });
+export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview }: Readonly<Props>) {
+  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview });
   
   const ref = useRef<HTMLButtonElement | null>(null);
   const [dimsStyle, setDimsStyle] = useState<Record<string, string>>({});
@@ -72,10 +74,10 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
         <h3 className="welcome-card-title-top">{title}</h3>
       </div>
       
-      {/* Previsualización del perfil - solo en la tarjeta de perfil */}
-      {userPreview && title === 'Perfil' && (
+      {/* Previsualización de facturas - solo en la tarjeta de facturas */}
+      {invoicesPreview && title === 'Facturas' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <ProfileMiniPreview user={userPreview} />
+          <InvoicesMiniPreview invoices={invoicesPreview} />
         </div>
       )}
       
@@ -90,6 +92,13 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
       {statisticsPreview && title === 'Estadisticas' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <StatisticsMiniPreview statisticsData={statisticsPreview} />
+        </div>
+      )}
+      
+      {/* Previsualización de tiempo - solo en la tarjeta de tiempo */}
+      {timePreview && title === 'Tiempo' && (
+        <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
+          <TimeMiniPreview timeEntries={timePreview} />
         </div>
       )}
       

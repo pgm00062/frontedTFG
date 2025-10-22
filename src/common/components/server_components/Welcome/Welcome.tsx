@@ -1,7 +1,7 @@
 import WelcomeWithNavigation from '../../client_components/WelcomeUI/Delivery/components/WelcomeWithNavigation';
 
 import type { ProfileClientProps } from '../../client_components/ProfileUI/Delivery/interface'
-import type { ProjectItem, StatisticsPreviewData } from '../../client_components/WelcomeUI/Delivery/interface'
+import type { ProjectItem, StatisticsPreviewData, InvoiceItem, TimeEntry } from '../../client_components/WelcomeUI/Delivery/interface'
 import { cookies } from 'next/headers'
 import Service from '@/service/src'
 
@@ -11,6 +11,8 @@ export default async function WelcomeServer() {
   let userPreview = undefined;
   let projectsPreview: ProjectItem[] = [];
   let statisticsPreview: StatisticsPreviewData | undefined = undefined;
+  let invoicesPreview: InvoiceItem[] = [];
+  let timePreview: TimeEntry[] = [];
   
   try {
     const cookieStore = cookies()
@@ -80,11 +82,66 @@ export default async function WelcomeServer() {
         avgEarningsPerHour: 0
       };
     }
+
+    // Obtener preview de facturas (últimas 3)
+    try {
+      const invoicesData = await Service.getCases('listInvoices', {
+        signal: abort.signal,
+        endPointData: {},
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }) as any
+
+      if (invoicesData && Array.isArray(invoicesData)) {
+        // Tomar solo las primeras 3 facturas
+        const firstThree = invoicesData.slice(0, 3);
+        invoicesPreview = firstThree.map((invoice: any) => ({
+          id: invoice.id,
+          invoiceNumber: invoice.invoiceNumber || `INV-${invoice.id}`,
+          amount: invoice.amount || 0,
+          issueDate: invoice.issueDate || new Date().toISOString(),
+          status: invoice.status || 'PENDIENTE',
+          projectName: invoice.projectName || invoice.project?.name
+        }));
+        console.log('✅ invoicesPreview creado:', invoicesPreview);
+      }
+    } catch (e) {
+      console.log('❌ No se pudieron obtener facturas para preview:', e);
+      invoicesPreview = [];
+    }
+
+    // Obtener preview de tiempo (últimas 3 sesiones)
+    try {
+      const timeData = await Service.getCases('listTimeSessions', {
+        signal: abort.signal,
+        endPointData: {},
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }) as any
+
+      if (timeData && Array.isArray(timeData)) {
+        // Tomar solo las primeras 3 sesiones
+        const firstThree = timeData.slice(0, 3);
+        timePreview = firstThree.map((entry: any) => ({
+          id: entry.id,
+          projectName: entry.projectName || entry.project?.name || 'Sin nombre',
+          totalTime: entry.totalTime || '0h',
+          status: entry.status || 'FINALIZADO',
+          startTime: entry.startTime
+        }));
+        console.log('✅ timePreview creado:', timePreview);
+      }
+    } catch (e) {
+      console.log('❌ No se pudieron obtener registros de tiempo para preview:', e);
+      timePreview = [];
+    }
   } catch (e) {
     console.error('Error fetching welcome data:', e);
     userPreview = undefined;
     projectsPreview = [];
     statisticsPreview = undefined;
+    invoicesPreview = [];
+    timePreview = [];
   }
   
   return (
@@ -92,6 +149,8 @@ export default async function WelcomeServer() {
       userPreview={userPreview}
       projectsPreview={projectsPreview}
       statisticsPreview={statisticsPreview}
+      invoicesPreview={invoicesPreview}
+      timePreview={timePreview}
     />
   )
 }
