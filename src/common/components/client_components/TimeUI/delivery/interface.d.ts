@@ -9,11 +9,26 @@ export interface TimeSession {
   description?: string;
 }
 
+export interface ProjectTotalTimeData {
+  projectId: number;
+  projectName: string;
+  userId: number;
+  userName: string;
+  totalDuration: string;
+  totalMinutes: number;
+  totalHours: number;
+  formattedTotalTime: string;
+  totalSessions: number;
+  averageSessionTime: number;
+  lastSessionDate?: string;
+}
+
 export interface ProjectTimeInfo {
   projectId: number;
   projectName: string;
   activeSession?: TimeSession;
-  totalTime: number; // En segundos
+  totalTime: number; // En segundos (deprecado, usar totalTimeData)
+  totalTimeData?: ProjectTotalTimeData; // Datos completos del tiempo total
 }
 
 export interface TimeStartRequest {
@@ -23,7 +38,6 @@ export interface TimeStartRequest {
 
 export interface TimeClientProps {
   projects: ProjectTimeInfo[];
-  onTimeUpdate?: () => Promise<void>;
 }
 
 export interface ProjectTimeControlProps {

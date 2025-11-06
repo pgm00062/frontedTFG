@@ -18,6 +18,12 @@ const ProjectTimeControl: React.FC<ProjectTimeControlProps> = ({
   const isActive = project.activeSession?.isActive || false;
   const isPaused = project.activeSession?.isPaused || false;
   const sessionId = project.activeSession?.id;
+  
+  // Debug logs
+  console.log(`🎯 [${project.projectName}] isActive:`, isActive, 'isPaused:', isPaused, 'session:', project.activeSession);
+  
+  // Usar el tiempo formateado del backend si está disponible
+  const totalTimeFormatted = project.totalTimeData?.formattedTotalTime || '0h 0m';
 
   const handleStart = () => {
     if (!isActive && !isPaused) {
@@ -54,20 +60,28 @@ const ProjectTimeControl: React.FC<ProjectTimeControlProps> = ({
         alignItems: 'center',
         gap: 16 
       }}>
-        {/* Nombre del proyecto */}
+        {/* Nombre del proyecto y tiempo total */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <Title level={4} style={{ margin: 0, fontSize: 16 }}>
             {project.projectName}
           </Title>
+          <Text type="secondary" style={{ fontSize: 12 }}>
+            Tiempo total: {totalTimeFormatted}
+          </Text>
         </div>
 
-        {/* Display del tiempo */}
+        {/* Display del tiempo de la sesión activa */}
         <div style={{ flex: 1, textAlign: 'center' }}>
           <TimerDisplay
             isActive={isActive && !isPaused}
             startTime={project.activeSession?.startTime}
             totalTime={project.totalTime}
           />
+          {isPaused && (
+            <Text type="warning" style={{ fontSize: 12, display: 'block', marginTop: 4 }}>
+              ⏸️ Pausado
+            </Text>
+          )}
         </div>
 
         {/* Controles */}

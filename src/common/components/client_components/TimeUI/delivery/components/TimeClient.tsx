@@ -4,14 +4,15 @@ import { Typography, Space, Empty, message, Card, Statistic } from 'antd';
 import { ClockCircleOutlined } from '@ant-design/icons';
 import ProjectTimeControl from './ProjectTimeControl';
 import { startTimeSession, endTimeSession, pauseTimeSession, resumeTimeSession } from '@/common/components/server_components/Time/timeActions';
-import { getDailyTotalTimeAction } from '@/common/components/server_components/Welcome/welcomeActions';
-import type { TimeClientProps } from '../interface';
+import { getDailyTotalTimeAction, getTimeDataAction } from '@/common/components/server_components/Welcome/welcomeActions';
+import type { TimeClientProps, ProjectTimeInfo } from '../interface';
 
 const { Title } = Typography;
 
-const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
+const TimeClient: React.FC<TimeClientProps> = ({ projects: initialProjects }) => {
   const [loading, setLoading] = useState(false);
   const [dailyTime, setDailyTime] = useState<string>('00:00:00');
+  const [projects, setProjects] = useState<ProjectTimeInfo[]>(initialProjects);
 
   const loadDailyTotalTime = useCallback(async () => {
     try {
@@ -24,6 +25,24 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
     }
   }, []);
 
+  const loadProjects = useCallback(async () => {
+    try {
+      console.log('🔄 Refrescando datos de proyectos...');
+      const updatedProjects = await getTimeDataAction();
+      console.log('✅ Proyectos actualizados:', updatedProjects);
+      setProjects(updatedProjects);
+    } catch (error) {
+      console.error('Error al cargar proyectos:', error);
+    }
+  }, []);
+
+  const refreshData = useCallback(async () => {
+    await Promise.all([
+      loadDailyTotalTime(),
+      loadProjects()
+    ]);
+  }, [loadDailyTotalTime, loadProjects]);
+
   useEffect(() => {
     loadDailyTotalTime();
   }, [loadDailyTotalTime]);
@@ -35,12 +54,8 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
       
       if (result.success) {
         message.success('Sesión de tiempo iniciada correctamente');
-        // Refrescar datos después de iniciar
-        if (onTimeUpdate) {
-          await onTimeUpdate();
-        }
-        // Actualizar tiempo total del día
-        await loadDailyTotalTime();
+        // Refrescar todos los datos
+        await refreshData();
       } else {
         message.error(`Error: ${result.error}`);
       }
@@ -59,12 +74,8 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
       
       if (result.success) {
         message.success('Sesión de tiempo pausada correctamente');
-        // Refrescar datos después de pausar
-        if (onTimeUpdate) {
-          await onTimeUpdate();
-        }
-        // Actualizar tiempo total del día
-        await loadDailyTotalTime();
+        // Refrescar todos los datos
+        await refreshData();
       } else {
         message.error(`Error: ${result.error}`);
       }
@@ -83,12 +94,8 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
       
       if (result.success) {
         message.success('Sesión de tiempo reanudada correctamente');
-        // Refrescar datos después de reanudar
-        if (onTimeUpdate) {
-          await onTimeUpdate();
-        }
-        // Actualizar tiempo total del día
-        await loadDailyTotalTime();
+        // Refrescar todos los datos
+        await refreshData();
       } else {
         message.error(`Error: ${result.error}`);
       }
@@ -107,12 +114,8 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects, onTimeUpdate }) => {
       
       if (result.success) {
         message.success('Sesión de tiempo finalizada correctamente');
-        // Refrescar datos después de finalizar
-        if (onTimeUpdate) {
-          await onTimeUpdate();
-        }
-        // Actualizar tiempo total del día
-        await loadDailyTotalTime();
+        // Refrescar todos los datos
+        await refreshData();
       } else {
         message.error(`Error: ${result.error}`);
       }

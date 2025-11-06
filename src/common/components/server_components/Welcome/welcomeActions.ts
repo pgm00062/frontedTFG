@@ -131,19 +131,19 @@ export async function getTimeDataAction(): Promise<ProjectTimeInfo[]> {
     // Mapear los proyectos al formato necesario para el time tracking
     const projects = await Promise.all(
       projectsData.content.map(async (project: any) => {
-        // Obtener tiempo total para este proyecto
-        let totalTime = 0;
+        // Obtener tiempo total para este proyecto con todos los datos
+        let totalTimeData = null;
         try {
-          const totalTimeData = await Service.getCases('getProjectTotalTime', {
+          const timeData = await Service.getCases('getProjectTotalTime', {
             signal: abort.signal,
             endPointData: project.id,
             token: authHeader || undefined,
             headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
           });
-          totalTime = (totalTimeData as any)?.totalSeconds || (totalTimeData as any)?.totalTime || 0;
+          totalTimeData = timeData as any;
         } catch (error) {
           console.log(`Error obteniendo tiempo total para proyecto ${project.id}:`, error);
-          totalTime = 0;
+          totalTimeData = null;
         }
 
         // Verificar si este proyecto tiene la sesión activa
@@ -154,7 +154,8 @@ export async function getTimeDataAction(): Promise<ProjectTimeInfo[]> {
               endTime: (activeSession as any)?.endTime,
               projectId: (activeSession as any)?.projectId,
               userId: (activeSession as any)?.userId,
-              isActive: (activeSession as any)?.active || true,
+              isActive: (activeSession as any)?.isActive ?? (activeSession as any)?.active ?? true,
+              isPaused: (activeSession as any)?.isPaused ?? false,
               description: (activeSession as any)?.description
             }
           : null;
@@ -163,7 +164,8 @@ export async function getTimeDataAction(): Promise<ProjectTimeInfo[]> {
           projectId: project.id,
           projectName: project.name,
           activeSession: projectActiveSession,
-          totalTime: totalTime
+          totalTime: totalTimeData?.totalMinutes ? totalTimeData.totalMinutes * 60 : 0,
+          totalTimeData: totalTimeData
         };
       })
     );
@@ -185,18 +187,35 @@ export async function getDailyTotalTimeAction() {
 
     // Obtener la fecha actual en formato YYYY-MM-DD
     const today = new Date();
-    const dateString = today.toISOString().split('T')[0]; // Formato: 2025-09-04
+    const dateString = today.toISOString().split('T')[0]; // Formato: 2025-11-06
 
     const dailyTime = await Service.getCases('getTotalTimeDay', {
       signal: new AbortController().signal,
       endPointData: { date: dateString },
       token: authHeader || undefined,
       headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
-    });
+    }) as any;
 
-    return dailyTime;
+    // El DTO devuelve: { totalHours: number, totalMinutes: number }
+    if (dailyTime && typeof dailyTime === 'object') {
+      const hours = Math.floor(dailyTime.totalHours || 0);
+      const minutes = (dailyTime.totalMinutes || 0) % 60;
+      
+      return {
+        success: true,
+        data: `${hours}h ${minutes}m`
+      };
+    }
+
+    return {
+      success: true,
+      data: '0h 0m'
+    };
   } catch (error) {
     console.error('Error obteniendo tiempo total del día:', error);
-    return { totalSeconds: 0 };
+    return {
+      success: false,
+      data: '0h 0m'
+    };
   }
 }

@@ -31,7 +31,7 @@ export default async function TimeServer() {
           token: authHeader || undefined,
           headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
         });
-        console.log('✅ Sesión activa obtenida:', activeSession);
+        console.log('✅ Sesión activa obtenida completa:', JSON.stringify(activeSession, null, 2));
       } catch (error) {
         console.log('⚠️ No hay sesión activa o error al obtenerla:', error);
         activeSession = null;
@@ -40,21 +40,20 @@ export default async function TimeServer() {
       // Mapear los proyectos al formato necesario para el time tracking
       projects = await Promise.all(
         projectsData.content.map(async (project: any) => {
-          // Obtener tiempo total para este proyecto
-          let totalTime = 0;
+          // Obtener tiempo total para este proyecto con todos los datos
+          let totalTimeData = null;
           try {
-            const totalTimeData = await Service.getCases('getProjectTotalTime', {
+            const timeData = await Service.getCases('getProjectTotalTime', {
               signal: abort.signal,
               endPointData: project.id,
               token: authHeader || undefined,
               headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
             });
-            // Basándome en el DTO ProjectTotalTimeOutputDto, debería tener totalSeconds o similar
-            totalTime = (totalTimeData as any)?.totalSeconds || (totalTimeData as any)?.totalTime || 0;
-            console.log(`⏱️ Tiempo total para proyecto ${project.name}:`, totalTime);
+            totalTimeData = timeData as any;
+            console.log(`⏱️ Tiempo total para proyecto ${project.name}:`, totalTimeData);
           } catch (error) {
             console.log(`⚠️ Error obteniendo tiempo total para proyecto ${project.id}:`, error);
-            totalTime = 0;
+            totalTimeData = null;
           }
 
           // Verificar si este proyecto tiene la sesión activa
@@ -65,18 +64,20 @@ export default async function TimeServer() {
                 endTime: (activeSession as any)?.endTime,
                 projectId: (activeSession as any)?.projectId,
                 userId: (activeSession as any)?.userId,
-                isActive: (activeSession as any)?.active || true, // Usar 'active' del DTO, no 'isActive'
+                isActive: (activeSession as any)?.isActive ?? (activeSession as any)?.active ?? true,
+                isPaused: (activeSession as any)?.isPaused ?? false, // Detectar estado pausado
                 description: (activeSession as any)?.description
               }
             : null;
 
-          console.log(`🎯 Proyecto ${project.name} - Sesión activa:`, projectActiveSession ? 'SÍ' : 'NO');
+          console.log(`🎯 Proyecto ${project.name} - Sesión activa:`, projectActiveSession ? 'SÍ' : 'NO', projectActiveSession?.isPaused ? '(PAUSADA)' : '');
 
           return {
             projectId: project.id,
             projectName: project.name,
             activeSession: projectActiveSession,
-            totalTime: totalTime
+            totalTime: totalTimeData?.totalMinutes ? totalTimeData.totalMinutes * 60 : 0, // Convertir minutos a segundos (legacy)
+            totalTimeData: totalTimeData // Datos completos del tiempo total
           };
         })
       );
