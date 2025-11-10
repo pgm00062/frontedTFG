@@ -16,19 +16,19 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({
     let interval: NodeJS.Timeout;
 
     if (isActive && startTime) {
-      // Calcular tiempo desde que empezó la sesión actual
+      // Calcular tiempo desde que empezó la sesión actual (sin incluir tiempo previo)
       const startTimestamp = new Date(startTime).getTime();
       
       const updateTime = () => {
         const now = Date.now();
         const sessionTime = Math.floor((now - startTimestamp) / 1000);
-        setCurrentTime(totalTime + sessionTime);
+        setCurrentTime(sessionTime); // Solo el tiempo de la sesión actual
       };
 
       updateTime(); // Actualizar inmediatamente
       interval = setInterval(updateTime, 1000);
     } else {
-      setCurrentTime(totalTime);
+      setCurrentTime(0); // Cuando no está activa, mostrar 0
     }
 
     return () => {
@@ -66,7 +66,7 @@ const TimerDisplay: React.FC<TimerDisplayProps> = ({
           type="secondary" 
           style={{ fontSize: 12 }}
         >
-          {isActive ? 'En progreso' : 'Total acumulado'}
+          {isActive ? 'Sesión actual' : 'Sin sesión'}
         </Text>
       </div>
     </div>

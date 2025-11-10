@@ -112,12 +112,17 @@ export default async function WelcomeServer() {
 
     // Obtener preview de tiempo (últimas 3 sesiones)
     try {
+      console.log('🔍 Intentando obtener listTimeSessions...');
       const timeData = await Service.getCases('listTimeSessions', {
         signal: abort.signal,
         endPointData: {},
         token: authHeader || undefined,
         headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
       }) as any
+
+      console.log('📦 timeData recibido del backend:', timeData);
+      console.log('📦 tipo de timeData:', typeof timeData);
+      console.log('📦 es array?:', Array.isArray(timeData));
 
       if (timeData && Array.isArray(timeData)) {
         // Tomar solo las primeras 3 sesiones
@@ -130,9 +135,12 @@ export default async function WelcomeServer() {
           startTime: entry.startTime
         }));
         console.log('✅ timePreview creado:', timePreview);
+      } else {
+        console.log('⚠️ timeData no es un array válido');
       }
     } catch (e) {
-      console.log('❌ No se pudieron obtener registros de tiempo para preview:', e);
+      console.log('❌ Error al obtener registros de tiempo para preview:', e);
+      console.error('❌ Error completo:', e);
       timePreview = [];
     }
   } catch (e) {
