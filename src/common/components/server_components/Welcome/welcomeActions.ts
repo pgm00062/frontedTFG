@@ -9,7 +9,7 @@ export async function getProjectsAction(page = 0, size = 10, searchTerm?: string
   const abort = new AbortController();
   
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
     const jsession = cookieStore.get('JSESSIONID')?.value;
     const authToken = cookieStore.get('AUTH_TOKEN')?.value;
     const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken;
@@ -49,45 +49,85 @@ export async function getProjectsAction(page = 0, size = 10, searchTerm?: string
 // Server Action para obtener estadísticas
 export async function getStatisticsAction() {
   try {
-    const cookieStore = await cookies();
+    const cookieStore = cookies();
+    const jsession = cookieStore.get('JSESSIONID')?.value;
     const authToken = cookieStore.get('AUTH_TOKEN')?.value;
+    const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken;
 
     if (!authToken) {
       throw new Error('No authentication token');
     }
 
-    // TODO: Implementar cuando tengamos los endpoints reales
-    // Por ahora retornamos datos placeholder
+    const abort = new AbortController();
+
+    // Realizar todas las llamadas en paralelo
+    const results = await Promise.allSettled([
+      // A) Ganancias del último mes
+      Service.getCases('getEarningsLastMonth', {
+        signal: abort.signal,
+        endPointData: {},
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }),
+
+      // B) Ganancias del año actual
+      Service.getCases('getEarningsThisYear', {
+        signal: abort.signal,
+        endPointData: {},
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }),
+
+      // C) Ganancias pendientes
+      Service.getCases('getPendingEarnings', {
+        signal: abort.signal,
+        endPointData: {},
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }),
+
+      // D) Tasa de ganancia por hora
+      Service.getCases('getEarningsRate', {
+        signal: abort.signal,
+        endPointData: {},
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }),
+    ]);
+
+    // Extraer valores o usar defaults (accediendo a .data de cada respuesta)
+    const earningsLastMonth = results[0].status === 'fulfilled' ? ((results[0].value as any)?.data ?? 0) : 0;
+    const earningsThisYear = results[1].status === 'fulfilled' ? ((results[1].value as any)?.data ?? 0) : 0;
+    const pendingEarnings = results[2].status === 'fulfilled' ? ((results[2].value as any)?.data ?? 0) : 0;
+    const earningsRate = results[3].status === 'fulfilled' ? (results[3].value as any)?.data : undefined;
+
+    // Log de cada resultado individual
+    console.log('💰 [getStatisticsAction] Ganancias último mes:', earningsLastMonth);
+    console.log('💰 [getStatisticsAction] Ganancias año actual:', earningsThisYear);
+    console.log('⏳ [getStatisticsAction] Ganancias pendientes:', pendingEarnings);
+    console.log('📈 [getStatisticsAction] Tasa de ganancia:', earningsRate);
+
+    // Log de errores si los hay
+    const names = ['earningsLastMonth', 'earningsThisYear', 'pendingEarnings', 'earningsRate'];
+    for (let index = 0; index < results.length; index++) {
+      const result = results[index];
+      if (result.status === 'rejected') {
+        console.error(`❌ [getStatisticsAction] Error en ${names[index]}:`, result.reason);
+      }
+    }
+
     const statisticsData = {
-      monthlyEarnings: {
-        total: 2500.75,
-        projects: [
-          { id: 1, name: "Proyecto Web E-commerce", earnings: 1500.50, completedDate: "2025-08-15" },
-          { id: 2, name: "App Móvil Cliente", earnings: 1000.25, completedDate: "2025-08-20" }
-        ]
-      },
-      pendingEarnings: {
-        total: 3200.00,
-        projects: [
-          { id: 3, name: "Sistema de Gestión", estimatedEarnings: 2000.00, progress: 65 },
-          { id: 4, name: "Landing Page", estimatedEarnings: 1200.00, progress: 30 }
-        ]
-      },
-      timeWorked: [
-        { projectId: 1, projectName: "Proyecto Web E-commerce", totalHours: 120, totalMinutes: 30 },
-        { projectId: 2, projectName: "App Móvil Cliente", totalHours: 85, totalMinutes: 45 },
-        { projectId: 3, projectName: "Sistema de Gestión", totalHours: 95, totalMinutes: 15 }
-      ],
-      earningsVsTime: [
-        { projectId: 1, projectName: "Proyecto Web E-commerce", earnings: 1500.50, hoursWorked: 120.5, earningsPerHour: 12.45 },
-        { projectId: 2, projectName: "App Móvil Cliente", earnings: 1000.25, hoursWorked: 85.75, earningsPerHour: 11.67 },
-        { projectId: 3, projectName: "Sistema de Gestión", earnings: 0, hoursWorked: 95.25, earningsPerHour: 0 }
-      ]
+      earningsLastMonth,
+      earningsThisYear,
+      pendingEarnings,
+      earningsRate,
     };
+
+    console.log('📊 [getStatisticsAction] Statistics data obtenida:', statisticsData);
 
     return statisticsData;
   } catch (error) {
-    console.error('Error fetching statistics:', error);
+    console.error('❌ [getStatisticsAction] Error fetching statistics:', error);
     throw error;
   }
 }

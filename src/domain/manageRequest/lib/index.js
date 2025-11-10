@@ -6,16 +6,19 @@ import { EXAMPLE_METHODS } from "./methods/example-methods";
 import { USER_METHODS } from "./methods/user-methods";
 import { TIME_METHODS } from "./methods/time-methods";
 import { INVOICE_METHODS } from "./methods/invoice-methods";
+import { STATISTICS_METHODS } from "./methods/statistics-methods";
 import { EXAMPLE_ERROR_MESSAGES, EXAMPLE_QUERIES } from "./queries/example-queries";
 import { USER_ERROR_MESSAGES, USER_QUERIES } from "./queries/user-queries";
 import { TIME_ERROR_MESSAGES, TIME_QUERIES } from "./queries/time-queries";
 import { INVOICE_ERROR_QUERIES, INVOICE_QUERIES } from "./queries/invoice-queries";
+import { STATISTICS_ERROR_MESSAGES, STATISTICS_QUERIES } from "./queries/statistics-queries";
 
 export const ERROR_MESSAGES = {
   ...EXAMPLE_ERROR_MESSAGES,
   ...USER_ERROR_MESSAGES,
   ...TIME_ERROR_MESSAGES,
   ...INVOICE_ERROR_QUERIES,
+  ...STATISTICS_ERROR_MESSAGES,
 };
 
 export const QUERIES = {
@@ -23,6 +26,7 @@ export const QUERIES = {
   ...USER_QUERIES,
   ...TIME_QUERIES,
   ...INVOICE_QUERIES,
+  ...STATISTICS_QUERIES,
 };
 
 export const METHODS = {
@@ -30,4 +34,5 @@ export const METHODS = {
   ...USER_METHODS,
   ...TIME_METHODS,
   ...INVOICE_METHODS,
+  ...STATISTICS_METHODS,
 };
