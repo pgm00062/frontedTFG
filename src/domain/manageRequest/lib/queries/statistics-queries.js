@@ -1,24 +1,24 @@
 export const STATISTICS_QUERIES = {
-  // Dinero ganado en el último mes (proyectos completados)
-  monthlyEarnings: () =>
+  // A) Ganancias del último mes (proyectos TERMINADOS)
+  earningsLastMonth: () =>
     `http://localhost:8080/projects/earnings-last-month`,
   
-  // Dinero pendiente de proyectos en progreso
+  // B) Ganancias del año actual (proyectos TERMINADOS en 2025)
+  earningsThisYear: () =>
+    `http://localhost:8080/projects/earnings-this-year`,
+  
+  // C) Ganancias pendientes (proyectos EN_PROGRESO)
   pendingEarnings: () =>
     `http://localhost:8080/projects/pending-earnings`,
 
-  // Tiempo trabajado por proyecto
-  projectsTimeWorked: () =>
-    `http://localhost:8080/statistics/projects-time-worked`,
-  
-  // Relación dinero ganado vs tiempo trabajado
-  earningsVsTime: () =>
-    `http://localhost:8080/statistics/earnings-vs-time`,
+  // D) Tasa de ganancia por hora (€/hora)
+  earningsRate: () =>
+    `http://localhost:8080/projects/earnings-rate`,
 };
 
 export const STATISTICS_ERROR_MESSAGES = {
-  monthlyEarnings: 'Error al obtener las ganancias mensuales',
+  earningsLastMonth: 'Error al obtener las ganancias del último mes',
+  earningsThisYear: 'Error al obtener las ganancias del año',
   pendingEarnings: 'Error al obtener las ganancias pendientes',
-  projectsTimeWorked: 'Error al obtener el tiempo trabajado por proyecto',
-  earningsVsTime: 'Error al obtener la relación dinero vs tiempo',
+  earningsRate: 'Error al obtener la tasa de ganancia por hora',
 };
