@@ -195,7 +195,7 @@ export async function getTimeDataAction(): Promise<ProjectTimeInfo[]> {
               projectId: (activeSession as any)?.projectId,
               userId: (activeSession as any)?.userId,
               isActive: (activeSession as any)?.isActive ?? (activeSession as any)?.active ?? true,
-              isPaused: (activeSession as any)?.isPaused ?? false,
+              isPaused: (activeSession as any)?.isPaused ?? (activeSession as any)?.paused ?? false,
               description: (activeSession as any)?.description
             }
           : null;

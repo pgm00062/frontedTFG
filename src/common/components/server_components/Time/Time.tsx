@@ -65,7 +65,7 @@ export default async function TimeServer() {
                 projectId: (activeSession as any)?.projectId,
                 userId: (activeSession as any)?.userId,
                 isActive: (activeSession as any)?.isActive ?? (activeSession as any)?.active ?? true,
-                isPaused: (activeSession as any)?.isPaused ?? false, // Detectar estado pausado
+                isPaused: (activeSession as any)?.isPaused ?? (activeSession as any)?.paused ?? false, // Mapear tanto isPaused como paused
                 description: (activeSession as any)?.description
               }
             : null;
