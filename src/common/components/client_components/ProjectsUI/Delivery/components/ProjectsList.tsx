@@ -1,7 +1,15 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import { Table, Empty, Modal, Button, message } from 'antd'
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons'
+import { Table, Empty, Modal, Button, message, Card, Tag, Row, Col, Divider } from 'antd'
+import { 
+  EditOutlined, 
+  DeleteOutlined, 
+  ProjectOutlined, 
+  CalendarOutlined, 
+  DollarOutlined,
+  FileTextOutlined,
+  TagOutlined 
+} from '@ant-design/icons'
 import type { ProjectsListProps } from '../interface'
 import StatusSelector from './StatusSelector'
 import EditProjectForm from './EditProjectForm'
@@ -20,6 +28,12 @@ const statusBg: Record<string, string> = {
   EN_PROGRESO: 'rgba(47,134,235,0.08)',
   TERMINADO: 'rgba(34,197,94,0.08)',
   CANCELADO: 'rgba(239,68,68,0.08)',
+}
+
+const statusLabels: Record<string, string> = {
+  EN_PROGRESO: 'En Progreso',
+  TERMINADO: 'Terminado',
+  CANCELADO: 'Cancelado',
 }
 
 export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) {
@@ -113,20 +127,30 @@ export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) 
   const columns = [
     
     {
-      title: 'Nombre',
+      title: <span style={{ fontWeight: 700, fontSize: 14 }}>Nombre</span>,
       dataIndex: 'name',
       key: 'name',
       render: (_: any, record: any) => (
         <button 
           style={{ 
             fontWeight: 600, 
-            color: '#0f172a', 
+            color: '#1890ff', 
             cursor: 'pointer',
             background: 'none',
             border: 'none',
             padding: 0,
             font: 'inherit',
-            textAlign: 'left'
+            textAlign: 'left',
+            fontSize: 15,
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.color = '#0050b3';
+            e.currentTarget.style.textDecoration = 'underline';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.color = '#1890ff';
+            e.currentTarget.style.textDecoration = 'none';
           }}
           onClick={() => openProjectModal(record)}
         >
@@ -136,21 +160,29 @@ export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) 
     },
     
     {
-      title: 'Descripción',
+      title: <span style={{ fontWeight: 700, fontSize: 14 }}>Descripción</span>,
       dataIndex: 'description',
       key: 'description',
       render: (text: string) => (
-        <div style={{ color: '#475569', maxWidth: 420, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={text}>
-          {text}
+        <div style={{ 
+          color: '#475569', 
+          maxWidth: 420, 
+          whiteSpace: 'nowrap', 
+          overflow: 'hidden', 
+          textOverflow: 'ellipsis',
+          fontSize: 14,
+          lineHeight: 1.5
+        }} title={text}>
+          {text || <span style={{ color: '#cbd5e1', fontStyle: 'italic' }}>Sin descripción</span>}
         </div>
       ),
     },
     {
-      title: 'Estado',
+      title: <span style={{ fontWeight: 700, fontSize: 14 }}>Estado</span>,
       dataIndex: 'status',
       key: 'status',
       align: 'center' as const,
-      width: 140,
+      width: 160,
       render: (_: string, record: any) => (
         <StatusSelector 
           project={record} 
@@ -162,16 +194,45 @@ export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) 
 
   return (
     <>
-      <Table
-        dataSource={projectsList}
-        columns={columns}
-        rowKey="id"
-        pagination={false}
-        size="middle"
-        bordered={false}
-        style={{ background: 'transparent' }}
-        rowClassName={() => 'project-row'}
-      />
+      <div style={{
+        background: '#ffffff',
+        borderRadius: 12,
+        padding: '16px',
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06)',
+        border: '1px solid #e5e7eb'
+      }}>
+        <Table
+          dataSource={projectsList}
+          columns={columns}
+          rowKey="id"
+          pagination={{
+            pageSize: 10,
+            showSizeChanger: false,
+            showTotal: (total) => (
+              <span style={{ color: '#6b7280', fontSize: 14 }}>
+                Total: <strong>{total}</strong> proyectos
+              </span>
+            ),
+            style: { marginTop: 16 }
+          }}
+          size="middle"
+          bordered={false}
+          style={{ background: 'transparent' }}
+          rowClassName={() => 'project-row'}
+          onRow={(record) => ({
+            style: {
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            },
+            onMouseEnter: (e) => {
+              e.currentTarget.style.backgroundColor = '#f9fafb';
+            },
+            onMouseLeave: (e) => {
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }
+          })}
+        />
+      </div>
 
       <Modal
         open={modalOpen}
@@ -182,8 +243,20 @@ export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) 
         }}
         footer={null}
         centered
-        width={720}
-        title={isEditing ? "Editar Proyecto" : "Detalles del Proyecto"}
+        width={800}
+        title={
+          isEditing ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <EditOutlined style={{ color: '#1890ff' }} />
+              <span>Editar Proyecto</span>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <ProjectOutlined style={{ color: '#1890ff' }} />
+              <span>Detalles del Proyecto</span>
+            </div>
+          )
+        }
       >
         {selectedProject?.error ? (
           <div style={{ padding: 16, color: '#ef4444' }}>
@@ -193,27 +266,180 @@ export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) 
           selectedProject && (
             <>
               {!isEditing ? (
-                // Vista de solo lectura
-                <div style={{ padding: 16 }}>
-                  <h3 style={{ marginTop: 0, marginBottom: 16 }}>{selectedProject.name}</h3>
-                  <p style={{ color: '#475569', marginBottom: 16 }}>{selectedProject.description}</p>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    <div><strong>Estado:</strong> {selectedProject.status}</div>
-                    {selectedProject.type && <div><strong>Tipo:</strong> {selectedProject.type}</div>}
-                    {selectedProject.startDate && <div><strong>Inicio:</strong> {selectedProject.startDate}</div>}
-                    {selectedProject.endDate && <div><strong>Fin:</strong> {selectedProject.endDate}</div>}
-                    {selectedProject.budget && <div><strong>Presupuesto:</strong> {selectedProject.budget}</div>}
+                // Vista de solo lectura mejorada
+                <div style={{ padding: '8px 0' }}>
+                  {/* Encabezado con nombre y estado */}
+                  <div style={{ 
+                    marginBottom: 24, 
+                    paddingBottom: 16, 
+                    borderBottom: '2px solid #f0f0f0' 
+                  }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      justifyContent: 'space-between', 
+                      alignItems: 'flex-start',
+                      marginBottom: 12 
+                    }}>
+                      <h2 style={{ 
+                        margin: 0, 
+                        fontSize: 24, 
+                        fontWeight: 700,
+                        color: '#1f2937',
+                        flex: 1
+                      }}>
+                        {selectedProject.name}
+                      </h2>
+                      <Tag 
+                        color={statusColor[selectedProject.status]}
+                        style={{ 
+                          fontSize: 14,
+                          padding: '4px 12px',
+                          borderRadius: 6,
+                          fontWeight: 600,
+                          border: 'none',
+                          background: statusBg[selectedProject.status],
+                          color: statusColor[selectedProject.status]
+                        }}
+                      >
+                        {statusLabels[selectedProject.status] || selectedProject.status}
+                      </Tag>
+                    </div>
+                    
+                    {/* Descripción */}
+                    {selectedProject.description && (
+                      <p style={{ 
+                        color: '#6b7280', 
+                        fontSize: 15,
+                        lineHeight: 1.6,
+                        margin: 0 
+                      }}>
+                        {selectedProject.description}
+                      </p>
+                    )}
                   </div>
+
+                  {/* Información en cards */}
+                  <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+                    {/* Tipo de Proyecto */}
+                    {selectedProject.type && (
+                      <Col span={12}>
+                        <Card 
+                          size="small" 
+                          style={{ 
+                            background: '#f9fafb',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 8
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <TagOutlined style={{ fontSize: 20, color: '#6366f1' }} />
+                            <div>
+                              <div style={{ fontSize: 12, color: '#9ca3af', marginBottom: 2 }}>
+                                Tipo
+                              </div>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>
+                                {selectedProject.type}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      </Col>
+                    )}
+
+                    {/* Presupuesto */}
+                    {selectedProject.budget && (
+                      <Col span={12}>
+                        <Card 
+                          size="small"
+                          style={{ 
+                            background: '#f0fdf4',
+                            border: '1px solid #bbf7d0',
+                            borderRadius: 8
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <DollarOutlined style={{ fontSize: 20, color: '#16a34a' }} />
+                            <div>
+                              <div style={{ fontSize: 12, color: '#15803d', marginBottom: 2 }}>
+                                Presupuesto
+                              </div>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#14532d' }}>
+                                {typeof selectedProject.budget === 'number' 
+                                  ? `${selectedProject.budget.toLocaleString('es-ES')} €`
+                                  : selectedProject.budget
+                                }
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      </Col>
+                    )}
+
+                    {/* Fecha de Inicio */}
+                    {selectedProject.startDate && (
+                      <Col span={12}>
+                        <Card 
+                          size="small"
+                          style={{ 
+                            background: '#eff6ff',
+                            border: '1px solid #bfdbfe',
+                            borderRadius: 8
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <CalendarOutlined style={{ fontSize: 20, color: '#2563eb' }} />
+                            <div>
+                              <div style={{ fontSize: 12, color: '#1e40af', marginBottom: 2 }}>
+                                Fecha de Inicio
+                              </div>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#1e3a8a' }}>
+                                {new Date(selectedProject.startDate).toLocaleDateString('es-ES')}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      </Col>
+                    )}
+
+                    {/* Fecha de Fin */}
+                    {selectedProject.endDate && (
+                      <Col span={12}>
+                        <Card 
+                          size="small"
+                          style={{ 
+                            background: '#fef3c7',
+                            border: '1px solid #fde68a',
+                            borderRadius: 8
+                          }}
+                        >
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                            <CalendarOutlined style={{ fontSize: 20, color: '#d97706' }} />
+                            <div>
+                              <div style={{ fontSize: 12, color: '#b45309', marginBottom: 2 }}>
+                                Fecha de Fin
+                              </div>
+                              <div style={{ fontSize: 15, fontWeight: 600, color: '#92400e' }}>
+                                {new Date(selectedProject.endDate).toLocaleDateString('es-ES')}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+                      </Col>
+                    )}
+                  </Row>
                   
+                  <Divider style={{ margin: '16px 0' }} />
+
                   {/* Botones en la parte inferior */}
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 24 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: 8 }}>
                     {/* Botón eliminar en la esquina inferior izquierda */}
                     <Button 
                       danger
                       icon={<DeleteOutlined />}
                       onClick={() => setDeleteModalOpen(true)}
+                      size="large"
                     >
-                      Eliminar proyecto
+                      Eliminar Proyecto
                     </Button>
                     
                     {/* Botón editar en la esquina inferior derecha */}
@@ -221,8 +447,9 @@ export default function ProjectsList({ projects }: Readonly<ProjectsListProps>) 
                       type="primary" 
                       icon={<EditOutlined />}
                       onClick={() => setIsEditing(true)}
+                      size="large"
                     >
-                      Actualizar datos
+                      Actualizar Datos
                     </Button>
                   </div>
                 </div>

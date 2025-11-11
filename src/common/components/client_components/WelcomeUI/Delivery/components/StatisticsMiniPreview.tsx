@@ -20,6 +20,29 @@ const StatisticsMiniPreview: React.FC<StatisticsMiniPreviewProps> = ({ statistic
   return (
     <div className="statistics-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className="statistics-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+        <div style={{ 
+          marginBottom: '16px',
+          textAlign: 'center',
+          paddingBottom: '12px',
+          borderBottom: '2px solid #e5e7eb'
+        }}>
+          <h3 style={{ 
+            fontSize: '18px', 
+            fontWeight: 700, 
+            color: '#1f2937',
+            marginBottom: '8px'
+          }}>
+            Visualiza tus estadísticas
+          </h3>
+          <p style={{ 
+            fontSize: '14px', 
+            color: '#6b7280',
+            margin: 0
+          }}>
+            Resumen general de tu actividad
+          </p>
+        </div>
+        
         <Row gutter={[8, 12]} style={{ flex: 1 }}>
           <Col xs={12}>
             <div style={{ textAlign: 'center', padding: '8px' }}>
@@ -58,18 +81,6 @@ const StatisticsMiniPreview: React.FC<StatisticsMiniPreviewProps> = ({ statistic
             </div>
           </Col>
         </Row>
-
-        <div className="statistics-preview-welcome" style={{ 
-          marginTop: '12px',
-          padding: '8px',
-          textAlign: 'center',
-          borderTop: '1px solid #f0f0f0',
-          backgroundColor: '#fafafa',
-          borderRadius: '6px',
-          fontSize: 12
-        }}>
-          Vista general de estadísticas
-        </div>
       </div>
     </div>
   );

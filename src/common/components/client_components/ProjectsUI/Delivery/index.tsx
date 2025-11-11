@@ -3,7 +3,8 @@ import React from 'react'
 import ProjectsList from './components/ProjectsList'
 import ProjectSearch from './components/ProjectSearch'
 import CreateProjectForm from './components/CreateProjectForm'
-import { Button, Drawer, Divider } from 'antd'
+import { Button, Modal, Divider } from 'antd'
+import { PlusOutlined } from '@ant-design/icons'
 import type { ProjectsContainerProps } from './interface'
 import useProjectsContainer, { useProjectsContainerWithServerAction } from '../infrastructure/ProjectsContainerOperation'
 import { useProjectSearch } from '../infrastructure/useProjectSearch'
@@ -22,10 +23,25 @@ export default function ProjectsContainer({ initialProjects, searchTerm, onCreat
   const handleSearch = onSearchChange || searchProjects;
 
   return (
-    <div style={{ position: 'relative', paddingTop: 56 }}>
-      {/* fixed button top-right */}
-      <div style={{ position: 'fixed', top: 16, right: 16, zIndex: 1000 }}>
-        <Button type="primary" onClick={() => setOpen(true)}>Crear proyecto</Button>
+    <div style={{ position: 'relative' }}>
+      {/* Botón de Crear Proyecto centrado arriba */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
+        <Button 
+          type="primary" 
+          size="large" 
+          icon={<PlusOutlined />}
+          onClick={() => setOpen(true)}
+          style={{
+            borderRadius: 8,
+            height: 44,
+            padding: '0 32px',
+            fontSize: 16,
+            fontWeight: 600,
+            boxShadow: '0 2px 8px rgba(24, 144, 255, 0.3)'
+          }}
+        >
+          Crear Nuevo Proyecto
+        </Button>
       </div>
       
       {/* Search component */}
@@ -48,9 +64,23 @@ export default function ProjectsContainer({ initialProjects, searchTerm, onCreat
         <ProjectsList projects={projects} />
       </div>
 
-      <Drawer title="Crear proyecto" placement="right" onClose={() => setOpen(false)} open={open} width={480}>
+      {/* Modal centrado en lugar de Drawer lateral */}
+      <Modal 
+        title={
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <PlusOutlined style={{ color: '#1890ff' }} />
+            <span>Crear Nuevo Proyecto</span>
+          </div>
+        }
+        open={open} 
+        onCancel={() => setOpen(false)}
+        footer={null}
+        centered
+        width={600}
+        destroyOnClose
+      >
         <CreateProjectForm onCreate={handleCreate} />
-      </Drawer>
+      </Modal>
     </div>
   )
 }

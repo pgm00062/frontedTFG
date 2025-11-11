@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import { List, Tag, Empty } from 'antd'
-import { FileTextOutlined, DollarOutlined } from '@ant-design/icons'
+import { FileTextOutlined, DollarOutlined, ClockCircleOutlined } from '@ant-design/icons'
 
 interface InvoiceItem {
   id: number
@@ -39,22 +39,36 @@ const InvoicesMiniPreview: React.FC<InvoicesMiniPreviewProps> = ({ invoices }) =
     return (
       <div className="invoices-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           <div className="invoices-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+            <div style={{ 
+              marginBottom: '16px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ 
+                fontSize: '18px', 
+                fontWeight: 700, 
+                color: '#1f2937',
+                marginBottom: '8px'
+              }}>
+                Gestiona tus facturas
+              </h3>
+              <p style={{ 
+                fontSize: '14px', 
+                color: '#6b7280',
+                margin: 0
+              }}>
+                Aún no tienes facturas creadas
+              </p>
+            </div>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Empty 
-                image={<FileTextOutlined style={{ fontSize: 48, color: '#d1d5db' }} />}
-                description="No hay facturas aún"
+                image={<FileTextOutlined style={{ fontSize: 48, color: '#bfdbfe' }} />}
+                description={
+                  <span style={{ color: '#9ca3af', fontSize: '13px' }}>
+                    ¡Crea tu primera factura!
+                  </span>
+                }
                 style={{ margin: 0 }}
               />
-            </div>
-            <div className="profile-preview-welcome" style={{ 
-              marginTop: '16px',
-              padding: '12px',
-              textAlign: 'center',
-              borderTop: '1px solid #f0f0f0',
-              backgroundColor: '#fafafa',
-              borderRadius: '6px'
-            }}>
-              ¡Crea tu primera factura!
             </div>
           </div>
       </div>
@@ -69,6 +83,70 @@ const InvoicesMiniPreview: React.FC<InvoicesMiniPreviewProps> = ({ invoices }) =
   return (
     <div className="invoices-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="invoices-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+          <div style={{ 
+            marginBottom: '16px',
+            textAlign: 'center',
+            paddingBottom: '12px',
+            borderBottom: '2px solid #e5e7eb'
+          }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 700, 
+              color: '#1f2937',
+              marginBottom: '8px'
+            }}>
+              Gestiona tus facturas
+            </h3>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#6b7280',
+              margin: 0,
+              marginBottom: '8px'
+            }}>
+              {invoices.length === 1 
+                ? 'Tienes 1 factura registrada' 
+                : `Tienes ${invoices.length} facturas registradas`
+              }
+            </p>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: '16px',
+              flexWrap: 'wrap',
+              marginTop: '8px'
+            }}>
+              <div style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                padding: '6px 12px',
+                background: '#f0fdf4',
+                border: '1px solid #bbf7d0',
+                borderRadius: '16px'
+              }}>
+                <DollarOutlined style={{ color: '#16a34a', fontSize: '14px' }} />
+                <span style={{ color: '#16a34a', fontWeight: 600, fontSize: '13px' }}>
+                  Total: {totalAmount.toFixed(2)}€
+                </span>
+              </div>
+              {pendingAmount > 0 && (
+                <div style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 12px',
+                  background: '#fefce8',
+                  border: '1px solid #fde047',
+                  borderRadius: '16px'
+                }}>
+                  <ClockCircleOutlined style={{ color: '#f59e0b', fontSize: '14px' }} />
+                  <span style={{ color: '#f59e0b', fontWeight: 600, fontSize: '13px' }}>
+                    Pendiente: {pendingAmount.toFixed(2)}€
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
           <div style={{ flex: 1, overflow: 'auto' }}>
             <List
               size="small"

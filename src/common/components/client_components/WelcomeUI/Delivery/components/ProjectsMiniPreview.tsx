@@ -40,22 +40,36 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
     return (
       <div className="projects-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           <div className="projects-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+            <div style={{ 
+              marginBottom: '16px',
+              textAlign: 'center'
+            }}>
+              <h3 style={{ 
+                fontSize: '18px', 
+                fontWeight: 700, 
+                color: '#1f2937',
+                marginBottom: '8px'
+              }}>
+                Crea y gestiona tus proyectos
+              </h3>
+              <p style={{ 
+                fontSize: '14px', 
+                color: '#6b7280',
+                margin: 0
+              }}>
+                Aún no tienes proyectos para empezar a trabajar
+              </p>
+            </div>
             <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Empty 
-                image={<ProjectOutlined style={{ fontSize: 48, color: '#d1d5db' }} />}
-                description="No hay proyectos aún"
+                image={<ProjectOutlined style={{ fontSize: 48, color: '#bfdbfe' }} />}
+                description={
+                  <span style={{ color: '#9ca3af', fontSize: '13px' }}>
+                    ¡Crea tu primer proyecto para comenzar!
+                  </span>
+                }
                 style={{ margin: 0 }}
               />
-            </div>
-            <div className="profile-preview-welcome" style={{ 
-              marginTop: '16px',
-              padding: '12px',
-              textAlign: 'center',
-              borderTop: '1px solid #f0f0f0',
-              backgroundColor: '#fafafa',
-              borderRadius: '6px'
-            }}>
-              ¡Crea tu primer proyecto!
             </div>
           </div>
       </div>
@@ -65,6 +79,31 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
   return (
     <div className="projects-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div className="projects-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>
+          <div style={{ 
+            marginBottom: '16px',
+            textAlign: 'center',
+            paddingBottom: '12px',
+            borderBottom: '2px solid #e5e7eb'
+          }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 700, 
+              color: '#1f2937',
+              marginBottom: '8px'
+            }}>
+              Crea y gestiona tus proyectos
+            </h3>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#6b7280',
+              margin: 0
+            }}>
+              {projects.length === 1 
+                ? 'Tienes 1 proyecto para empezar a trabajar' 
+                : `Tienes ${projects.length} proyectos para empezar a trabajar`
+              }
+            </p>
+          </div>
           <div style={{ flex: 1, overflow: 'auto' }}>
             <List
               size="small"
@@ -135,17 +174,6 @@ const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) =
                 +{projects.length - 3} proyectos más
               </div>
             )}
-          </div>
-
-          <div className="profile-preview-welcome" style={{ 
-            marginTop: '16px',
-            padding: '12px',
-            textAlign: 'center',
-            borderTop: '1px solid #f0f0f0',
-            backgroundColor: '#fafafa',
-            borderRadius: '6px'
-          }}>
-            {projects.length === 1 ? '1 proyecto' : `${projects.length} proyectos`}
           </div>
         </div>
     </div>

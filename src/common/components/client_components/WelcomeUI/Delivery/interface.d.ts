@@ -61,6 +61,7 @@ export interface GridProps {
   statisticsPreview?: StatisticsPreviewData;
   invoicesPreview?: InvoiceItem[];
   timePreview?: TimeEntry[];
+  dailyTotalTime?: string;
 }
 
 export interface Props {
@@ -82,6 +83,7 @@ export interface Props {
   statisticsPreview?: StatisticsPreviewData;
   invoicesPreview?: InvoiceItem[];
   timePreview?: TimeEntry[];
+  dailyTotalTime?: string;
 }
 
 export interface PropsGridFull {
@@ -98,4 +100,5 @@ export interface PropsGridFull {
   statisticsPreview?: StatisticsPreviewData;
   invoicesPreview?: InvoiceItem[];
   timePreview?: TimeEntry[];
+  dailyTotalTime?: string;
 }

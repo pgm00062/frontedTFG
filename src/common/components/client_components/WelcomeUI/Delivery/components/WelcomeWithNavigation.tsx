@@ -17,6 +17,7 @@ interface WelcomeWithNavigationProps {
   statisticsPreview?: StatisticsPreviewData;
   invoicesPreview?: any[];
   timePreview?: any[];
+  dailyTotalTime?: string;
   // Props removidas para lazy loading: initialProjects, statisticsData, initialInvoices
 }
 
@@ -25,7 +26,8 @@ const WelcomeWithNavigation: React.FC<WelcomeWithNavigationProps> = ({
   projectsPreview,
   statisticsPreview,
   invoicesPreview,
-  timePreview
+  timePreview,
+  dailyTotalTime
 }) => {
   const [activeTab, setActiveTab] = useState('inicio');
 
@@ -35,7 +37,7 @@ const WelcomeWithNavigation: React.FC<WelcomeWithNavigationProps> = ({
 
   return (
     <main className="welcome-page-full">
-      <WelcomeHeader />
+      <WelcomeHeader userName={userPreview?.name} />
       <div style={{ padding: '0 24px', maxWidth: '1400px', margin: '0 auto' }}>
         <WelcomeNavigation activeTab={activeTab} onTabChange={handleTabChange} />
         <WelcomeContent
@@ -45,6 +47,7 @@ const WelcomeWithNavigation: React.FC<WelcomeWithNavigationProps> = ({
           statisticsPreview={statisticsPreview}
           invoicesPreview={invoicesPreview}
           timePreview={timePreview}
+          dailyTotalTime={dailyTotalTime}
         />
       </div>
     </main>

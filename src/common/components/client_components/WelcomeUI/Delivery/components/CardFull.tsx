@@ -15,8 +15,8 @@ const icons: Record<string, React.ReactNode> = {
   invoice: <FileTextOutlined className="welcome-card-icon-top" />,
 };
 
-export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview }: Readonly<Props>) {
-  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview });
+export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview, dailyTotalTime }: Readonly<Props>) {
+  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview, dailyTotalTime });
   
   const ref = useRef<HTMLButtonElement | null>(null);
   const [dimsStyle, setDimsStyle] = useState<Record<string, string>>({});
@@ -98,7 +98,7 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
       {/* Previsualización de tiempo - solo en la tarjeta de tiempo */}
       {timePreview && title === 'Tiempo' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <TimeMiniPreview timeEntries={timePreview} />
+          <TimeMiniPreview timeEntries={timePreview} dailyTotalTime={dailyTotalTime} />
         </div>
       )}
       

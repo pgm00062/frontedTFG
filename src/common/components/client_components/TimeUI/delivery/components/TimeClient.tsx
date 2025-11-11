@@ -129,49 +129,90 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects: initialProjects }) =>
 
   if (!projects || projects.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '48px 24px' }}>
+      <div style={{ 
+        textAlign: 'center', 
+        padding: '48px 24px',
+        background: '#ffffff',
+        borderRadius: 12,
+        boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+        margin: '24px auto',
+        maxWidth: 600
+      }}>
         <Empty
-          image={<ClockCircleOutlined style={{ fontSize: 64, color: '#d1d5db' }} />}
-          description="No hay proyectos disponibles"
-        >
-          <p>Crea un proyecto primero para poder registrar tiempo de trabajo.</p>
-        </Empty>
+          image={<ClockCircleOutlined style={{ fontSize: 64, color: '#bfdbfe' }} />}
+          description={
+            <div>
+              <div style={{ fontSize: 16, fontWeight: 600, color: '#1f2937', marginBottom: 8 }}>
+                No hay proyectos disponibles
+              </div>
+              <div style={{ fontSize: 14, color: '#6b7280' }}>
+                Crea un proyecto primero para poder registrar tiempo de trabajo.
+              </div>
+            </div>
+          }
+        />
       </div>
     );
   }
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '24px' }}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px 24px' }}>
       <Space direction="vertical" size="large" style={{ width: '100%' }}>
         {/* Estadísticas de tiempo diario */}
-        <Card>
+        <Card
+          style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: 12,
+            border: 'none',
+            boxShadow: '0 4px 12px rgba(102, 126, 234, 0.4)'
+          }}
+          bodyStyle={{ padding: '24px' }}
+        >
           <Statistic
-            title="Tiempo trabajado hoy"
+            title={
+              <span style={{ color: '#ffffff', fontSize: 14, fontWeight: 500 }}>
+                Tiempo trabajado hoy
+              </span>
+            }
             value={dailyTime}
-            prefix={<ClockCircleOutlined />}
-            valueStyle={{ color: '#1890ff' }}
+            prefix={<ClockCircleOutlined style={{ color: '#ffffff' }} />}
+            valueStyle={{ 
+              color: '#ffffff', 
+              fontSize: 32, 
+              fontWeight: 700,
+              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}
           />
         </Card>
 
-        <div>
-          <Title level={2}>Registro de Tiempo</Title>
-          <Typography.Paragraph type="secondary">
+        <div style={{ 
+          background: '#ffffff',
+          borderRadius: 12,
+          padding: '24px',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
+          border: '1px solid #e5e7eb'
+        }}>
+          <Title level={2} style={{ marginTop: 0, marginBottom: 8, fontSize: 24, fontWeight: 700 }}>
+            ⏱️ Registro de Tiempo
+          </Title>
+          <Typography.Paragraph type="secondary" style={{ fontSize: 15, marginBottom: 24 }}>
             Gestiona el tiempo de trabajo en tus proyectos. Puedes iniciar, pausar y finalizar sesiones de tiempo.
           </Typography.Paragraph>
-        </div>
 
-        <div>
-          {projects.map((project) => (
-            <ProjectTimeControl
-              key={project.projectId}
-              project={project}
-              loading={loading}
-              onStartTime={handleStartTime}
-              onStopTime={handleStopTime}
-              onResumeTime={handleResumeTime}
-              onCompleteTime={handleCompleteTime}
-            />
-          ))}
+          <div>
+            {projects.map((project, index) => (
+              <div key={project.projectId} style={{ marginBottom: index < projects.length - 1 ? 16 : 0 }}>
+                <ProjectTimeControl
+                  project={project}
+                  loading={loading}
+                  onStartTime={handleStartTime}
+                  onStopTime={handleStopTime}
+                  onResumeTime={handleResumeTime}
+                  onCompleteTime={handleCompleteTime}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </Space>
     </div>

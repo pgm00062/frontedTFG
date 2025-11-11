@@ -27,6 +27,7 @@ interface WelcomeContentProps {
   statisticsPreview?: StatisticsPreviewData;
   invoicesPreview?: any[];
   timePreview?: any[];
+  dailyTotalTime?: string;
   // Removemos las props de datos iniciales para lazy loading
 }
 
@@ -36,7 +37,8 @@ const WelcomeContent: React.FC<WelcomeContentProps> = ({
   projectsPreview, 
   statisticsPreview,
   invoicesPreview,
-  timePreview
+  timePreview,
+  dailyTotalTime
 }) => {
   // Estados para lazy loading
   const [isLoading, setIsLoading] = useState(false);
@@ -161,6 +163,7 @@ const WelcomeContent: React.FC<WelcomeContentProps> = ({
             statisticsPreview={statisticsPreview}
             invoicesPreview={invoicesPreview}
             timePreview={timePreview}
+            dailyTotalTime={dailyTotalTime}
           />
         );
       
@@ -185,7 +188,7 @@ const WelcomeContent: React.FC<WelcomeContentProps> = ({
             </div>
           );
         }
-        return <TimeClient projects={timeData} onTimeUpdate={refreshTimeData} />;
+        return <TimeClient projects={timeData} />;
       }
       
       case 'estadisticas':

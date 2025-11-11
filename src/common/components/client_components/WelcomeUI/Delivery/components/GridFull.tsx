@@ -2,7 +2,7 @@ import React from 'react';
 import CardFull from './CardFull';
 import type { PropsGridFull } from '../interface';
 
-export default function GridFull({ expanded, onToggle, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview }: Readonly<PropsGridFull>) {
+export default function GridFull({ expanded, onToggle, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview, dailyTotalTime }: Readonly<PropsGridFull>) {
   return (
     <>
       {/* Overlay oscuro cuando hay una card expandida */}
@@ -51,6 +51,7 @@ export default function GridFull({ expanded, onToggle, userPreview, projectsPrev
         onToggle={() => onToggle(3)}
         expanded={expanded === 3}
         timePreview={timePreview}
+        dailyTotalTime={dailyTotalTime}
       />
     </section>
     </>

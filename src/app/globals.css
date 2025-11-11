@@ -777,25 +777,27 @@ body {
 /* Profile Button (top right corner) */
 .profile-button {
   position: fixed;
-  top: 16px;
-  right: 16px;
-  width: 44px;
-  height: 44px;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #6366f1 0%, #818cf8 100%);
-  border: 2px solid #fff;
+  border: 3px solid #fff;
   box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 1100;
-  transition: all 0.2s ease;
+  z-index: 9999; /* Asegurar que esté siempre por encima */
+  transition: all 0.3s ease;
+  outline: none;
 }
 
 .profile-button:hover {
   transform: scale(1.1);
-  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  background: linear-gradient(135deg, #818cf8 0%, #6366f1 100%);
 }
 
 .profile-button:active {
@@ -803,7 +805,7 @@ body {
 }
 
 .profile-button-icon {
-  font-size: 20px;
+  font-size: 22px;
   color: #fff;
 }
 

@@ -13,6 +13,7 @@ export default async function WelcomeServer() {
   let statisticsPreview: StatisticsPreviewData | undefined = undefined;
   let invoicesPreview: InvoiceItem[] = [];
   let timePreview: TimeEntry[] = [];
+  let dailyTotalTime = '0h 0m';
   
   try {
     const cookieStore = cookies()
@@ -135,6 +136,29 @@ export default async function WelcomeServer() {
       console.log('❌ No se pudieron obtener registros de tiempo para preview:', e);
       timePreview = [];
     }
+
+    // Obtener tiempo total del día
+    try {
+      const today = new Date();
+      const dateString = today.toISOString().split('T')[0];
+      
+      const dailyTime = await Service.getCases('getTotalTimeDay', {
+        signal: abort.signal,
+        endPointData: { date: dateString },
+        token: authHeader || undefined,
+        headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
+      }) as any;
+
+      if (dailyTime && typeof dailyTime === 'object') {
+        const hours = Math.floor(dailyTime.totalHours || 0);
+        const minutes = (dailyTime.totalMinutes || 0) % 60;
+        dailyTotalTime = `${hours}h ${minutes}m`;
+        console.log('✅ dailyTotalTime creado:', dailyTotalTime);
+      }
+    } catch (e) {
+      console.log('❌ No se pudo obtener el tiempo total del día:', e);
+      dailyTotalTime = '0h 0m';
+    }
   } catch (e) {
     console.error('Error fetching welcome data:', e);
     userPreview = undefined;
@@ -142,6 +166,7 @@ export default async function WelcomeServer() {
     statisticsPreview = undefined;
     invoicesPreview = [];
     timePreview = [];
+    dailyTotalTime = '0h 0m';
   }
   
   return (
@@ -151,6 +176,7 @@ export default async function WelcomeServer() {
       statisticsPreview={statisticsPreview}
       invoicesPreview={invoicesPreview}
       timePreview={timePreview}
+      dailyTotalTime={dailyTotalTime}
     />
   )
 }
