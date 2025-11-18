@@ -1,8 +1,10 @@
+import { API_BASE_URL } from '@/config/api';
+
 export const EXAMPLE_QUERIES = {
   updateCommerce: (values) =>
-    `http://localhost:8080/updateComerce/${values.id}`,
+    `${API_BASE_URL}/updateComerce/${values.id}`,
    getComerces: () =>
-    `http://localhost:8080/getCommerces`,
+    `${API_BASE_URL}/getCommerces`,
   
   
 };

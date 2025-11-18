@@ -1,19 +1,21 @@
+import { API_BASE_URL } from '@/config/api';
+
 export const STATISTICS_QUERIES = {
   // A) Ganancias del último mes (proyectos TERMINADOS)
   earningsLastMonth: () =>
-    `http://localhost:8080/projects/earnings-last-month`,
+    `${API_BASE_URL}/projects/earnings-last-month`,
   
   // B) Ganancias del año actual (proyectos TERMINADOS en 2025)
   earningsThisYear: () =>
-    `http://localhost:8080/projects/earnings-this-year`,
+    `${API_BASE_URL}/projects/earnings-this-year`,
   
   // C) Ganancias pendientes (proyectos EN_PROGRESO)
   pendingEarnings: () =>
-    `http://localhost:8080/projects/pending-earnings`,
+    `${API_BASE_URL}/projects/pending-earnings`,
 
   // D) Tasa de ganancia por hora (€/hora)
   earningsRate: () =>
-    `http://localhost:8080/projects/earnings-rate`,
+    `${API_BASE_URL}/projects/earnings-rate`,
 };
 
 export const STATISTICS_ERROR_MESSAGES = {

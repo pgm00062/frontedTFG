@@ -1,20 +1,22 @@
+import { API_BASE_URL } from '@/config/api';
+
 export const TIME_QUERIES = {
-    startTime: () =>
-    `http://localhost:8080/times/start`,
-    endTime: () =>
-    `http://localhost:8080/times/end`,
-    getActiveSession: () =>
-    `http://localhost:8080/times/active`,
-    getProjectTotalTime: (projectId) =>
-    `http://localhost:8080/times/project/${projectId}/total`,
-    listTimeSessions: () =>
-    `http://localhost:8080/times/list`,
-    pauseTime: () =>
-    `http://localhost:8080/times/pause`,
-    resumeTime: () =>
-    `http://localhost:8080/times/resume`,
-    totalTimeDay: () =>
-    `http://localhost:8080/times/total/day`
+  startTime: () =>
+    `${API_BASE_URL}/times/start`,
+  endTime: () =>
+    `${API_BASE_URL}/times/end`,
+  getActiveSession: () =>
+    `${API_BASE_URL}/times/active`,
+  getProjectTotalTime: (projectId) =>
+    `${API_BASE_URL}/times/project/${projectId}/total`,
+  listTimeSessions: () =>
+    `${API_BASE_URL}/times/list`,
+  pauseTime: () =>
+    `${API_BASE_URL}/times/pause`,
+  resumeTime: () =>
+    `${API_BASE_URL}/times/resume`,
+  getTotalTimeDay: () =>
+    `${API_BASE_URL}/times/total/day`
 };
 
 export const TIME_ERROR_MESSAGES = {

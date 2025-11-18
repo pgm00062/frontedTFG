@@ -1,5 +1,6 @@
 import manageRequest from '@/domain/manageRequest';
 import { get } from 'http';
+import { API_BASE_URL } from '@/config/api';
 
 const userUseCases = {
   login: (signal, values, token) => {
@@ -166,7 +167,7 @@ const userUseCases = {
         body: JSON.stringify({ status }), // Status directo sin mapeo
       };
 
-      const url = `http://localhost:8080/projects/status/${id}`;
+      const url = `${API_BASE_URL}/projects/status/${id}`;
       const response = await fetch(url, fetchConfig);
 
       if (!response.ok) {
@@ -208,7 +209,7 @@ const userUseCases = {
         body: JSON.stringify(projectData), // Project data without ID
       };
 
-      const url = `http://localhost:8080/projects/update/${id}`;
+      const url = `${API_BASE_URL}/projects/update/${id}`;
       const response = await fetch(url, fetchConfig);
 
       if (!response.ok) {
@@ -249,7 +250,7 @@ const userUseCases = {
         credentials: 'include',
       };
 
-      const url = `http://localhost:8080/projects/delete/${id}`;
+      const url = `${API_BASE_URL}/projects/delete/${id}`;
       const response = await fetch(url, fetchConfig);
 
       if (!response.ok) {

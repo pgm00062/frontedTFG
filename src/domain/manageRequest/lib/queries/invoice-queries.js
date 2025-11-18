@@ -1,14 +1,16 @@
+import { API_BASE_URL } from '@/config/api';
+
 export const INVOICE_QUERIES = {
   createInvoice: () =>
-    `http://localhost:8080/invoices/create`,
+    `${API_BASE_URL}/invoices/create`,
   updateInvoice: (id) =>
-    `http://localhost:8080/invoices/update/${id}`,
+    `${API_BASE_URL}/invoices/update/${id}`,
   listInvoices: () =>
-    `http://localhost:8080/invoices/list`,
-  getInvoice: () =>
-    `http://localhost:8080/invoices`,
+    `${API_BASE_URL}/invoices/list`,
+  getInvoiceById: () =>
+    `${API_BASE_URL}/invoices`,
   deleteInvoice: (id) =>
-    `http://localhost:8080/invoices/delete/${id}`
+    `${API_BASE_URL}/invoices/delete/${id}`
 };
 
 export const INVOICE_ERROR_QUERIES = {

@@ -1,4 +1,5 @@
 import manageRequest from '@/domain/manageRequest';
+import { API_BASE_URL } from '@/config/api';
 
 const InvoiceUseCases = {
     createInvoice: (signal, values, token, headers) => {
@@ -42,7 +43,7 @@ const InvoiceUseCases = {
                 body: JSON.stringify(invoiceData), // Invoice data without ID
             };
 
-            const url = `http://localhost:8080/invoices/update/${id}`;
+            const url = `${API_BASE_URL}/invoices/update/${id}`;
             const response = await fetch(url, fetchConfig);
 
             if (!response.ok) {
@@ -112,7 +113,7 @@ const InvoiceUseCases = {
                 credentials: 'include',
             };
 
-            const url = `http://localhost:8080/invoices/delete/${id}`;
+            const url = `${API_BASE_URL}/invoices/delete/${id}`;
             const response = await fetch(url, fetchConfig);
 
             if (!response.ok) {

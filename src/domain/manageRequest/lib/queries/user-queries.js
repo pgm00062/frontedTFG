@@ -1,35 +1,37 @@
+import { API_BASE_URL } from '@/config/api';
+
 export const USER_QUERIES = {
   login: () =>
-    `http://localhost:8080/users/login`,
+    `${API_BASE_URL}/users/login`,
   register: () =>
-    `http://localhost:8080/users/register`,
+    `${API_BASE_URL}/users/register`,
   getUser: () =>
-    `http://localhost:8080/users/me`,
+    `${API_BASE_URL}/users/me`,
   updateUser: () =>
-    `http://localhost:8080/users/update`,
+    `${API_BASE_URL}/users/update`,
   changePassword: () =>
-    `http://localhost:8080/users/me/password`,
+    `${API_BASE_URL}/users/me/password`,
   logout: () =>
-    `http://localhost:8080/users/logout`,
+    `${API_BASE_URL}/users/logout`,
 
   //projects
 
   createProject: () =>
-    `http://localhost:8080/projects/create`,
+    `${API_BASE_URL}/projects/create`,
   listProjects: () =>
-    `http://localhost:8080/projects/list`,
+    `${API_BASE_URL}/projects/list`,
   getProjectById: () =>
-    `http://localhost:8080/projects`,
+    `${API_BASE_URL}/projects`,
   searchProjectsByName: () =>
-    `http://localhost:8080/projects/searchName`,
+    `${API_BASE_URL}/projects/searchName`,
   updateProjectStatus: (id) =>
-    `http://localhost:8080/projects/status/${id}`,
+    `${API_BASE_URL}/projects/status/${id}`,
   updateProject: (id) =>
-    `http://localhost:8080/projects/update/${id}`,
+    `${API_BASE_URL}/projects/update/${id}`,
   deleteProject: (id) =>
-    `http://localhost:8080/projects/delete/${id}`,
+    `${API_BASE_URL}/projects/delete/${id}`,
   getLastThreeProjects: () =>
-    `http://localhost:8080/projects/getLastThree`,
+    `${API_BASE_URL}/projects/getLastThree`,
 
 };
 
