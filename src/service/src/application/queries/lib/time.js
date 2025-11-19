@@ -96,7 +96,7 @@ const timeUseCases = {
   getTotalTimeDay: (signal, values, token, headers) => {
     return manageRequest(
       signal,
-      'totalTimeDay',
+      'getTotalTimeDay',
       values,
       'query',
       'normal',

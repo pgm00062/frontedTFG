@@ -30,13 +30,9 @@ const statusLabels: Record<string, string> = {
 }
 
 const ProjectsMiniPreview: React.FC<ProjectsMiniPreviewProps> = ({ projects }) => {
-  console.log('🎯 ProjectsMiniPreview recibió:', projects);
-  console.log('🔢 Número de proyectos:', projects?.length || 0);
-  
   const previewProjects = projects.slice(0, 3)
 
   if (!projects || projects.length === 0) {
-    console.log('⚠️ Mostrando empty state - No hay proyectos');
     return (
       <div className="projects-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
           <div className="projects-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>

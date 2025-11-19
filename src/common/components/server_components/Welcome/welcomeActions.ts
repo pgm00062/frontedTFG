@@ -23,10 +23,10 @@ export async function getProjectsAction(page = 0, size = 10, searchTerm?: string
         endPointData: { name: searchTerm.trim(), page, size },
         token: authHeader || undefined,
         headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
-      });
+      }) as any;
       
-      // Los resultados de búsqueda pueden venir directamente como array
-      projects = Array.isArray(searchResults) ? searchResults : [];
+      // Los resultados vienen en formato paginado
+      projects = searchResults?.content || [];
     } else {
       // Listar todos los proyectos
       const projectsData = await Service.getCases('listProjects', {

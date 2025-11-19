@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import "antd/dist/reset.css";
-import Sidebar from '@/common/components/server_components/Sidebar/Sidebar'
-import ProfileButton from '@/common/components/client_components/ProfileButton/ProfileButton'
+import LayoutWrapper from '@/common/components/client_components/LayoutWrapper'
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,9 +30,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Sidebar />
-        <ProfileButton />
-        {children}
+        <LayoutWrapper>
+          {children}
+        </LayoutWrapper>
       </body>
     </html>
   );

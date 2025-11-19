@@ -20,7 +20,7 @@ export const TIME_METHODS = {
   resumeTime: (response) => {
     return response.data;
   },
-  totalTimeDay: (response) => {
+  getTotalTimeDay: (response) => {
     return response.data;
   }
 };

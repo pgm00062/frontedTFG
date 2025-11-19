@@ -4,11 +4,11 @@ import { useGridExpansion } from '../../infrastructure/gridExpansionOperation'
 import GridFull from './GridFull'
 import type { GridProps } from '../interface'
 
-export default function WelcomeGrid({ full = true, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview }: GridProps) {
+export default function WelcomeGrid({ full = true, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview, dailyTotalTime }: GridProps) {
   const { expanded, toggle } = useGridExpansion()
 
   if (full) {
-    return <GridFull expanded={expanded} onToggle={toggle} userPreview={userPreview} projectsPreview={projectsPreview} statisticsPreview={statisticsPreview} invoicesPreview={invoicesPreview} timePreview={timePreview} />
+    return <GridFull expanded={expanded} onToggle={toggle} userPreview={userPreview} projectsPreview={projectsPreview} statisticsPreview={statisticsPreview} invoicesPreview={invoicesPreview} timePreview={timePreview} dailyTotalTime={dailyTotalTime} />
   }
   return (
     <section className="welcome-grid">

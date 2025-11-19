@@ -15,8 +15,6 @@ interface StatisticsMiniPreviewProps {
 }
 
 const StatisticsMiniPreview: React.FC<StatisticsMiniPreviewProps> = ({ statisticsData }) => {
-  console.log('📊 StatisticsMiniPreview recibió:', statisticsData);
-
   return (
     <div className="statistics-preview-outer" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
       <div className="statistics-preview-inner" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '16px' }}>

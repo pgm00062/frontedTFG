@@ -13,7 +13,7 @@ export async function handleLogout(): Promise<boolean> {
 
     if (!token) {
       message.warning('No hay sesión activa');
-      window.location.href = '/register-login';
+      window.location.href = '/';
       return false;
     }
 
@@ -36,7 +36,7 @@ export async function handleLogout(): Promise<boolean> {
     message.success('Sesión cerrada correctamente');
     
     // Redirigir al login
-    window.location.href = '/register-login';
+    window.location.href = '/';
     
     return true;
   } catch (error: any) {

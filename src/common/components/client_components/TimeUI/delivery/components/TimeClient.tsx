@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect, useCallback } from 'react';
-import { Typography, Space, Empty, message, Card, Statistic } from 'antd';
-import { ClockCircleOutlined } from '@ant-design/icons';
+import { Typography, Space, Empty, message, Card, Statistic, Button } from 'antd';
+import { ClockCircleOutlined, ReloadOutlined } from '@ant-design/icons';
 import ProjectTimeControl from './ProjectTimeControl';
 import { startTimeSession, endTimeSession, pauseTimeSession, resumeTimeSession } from '@/common/components/server_components/Time/timeActions';
 import { getDailyTotalTimeAction, getTimeDataAction } from '@/common/components/server_components/Welcome/welcomeActions';
@@ -11,6 +11,7 @@ const { Title } = Typography;
 
 const TimeClient: React.FC<TimeClientProps> = ({ projects: initialProjects }) => {
   const [loading, setLoading] = useState(false);
+  const [refreshingTime, setRefreshingTime] = useState(false);
   const [dailyTime, setDailyTime] = useState<string>('00:00:00');
   const [projects, setProjects] = useState<ProjectTimeInfo[]>(initialProjects);
 
@@ -24,6 +25,19 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects: initialProjects }) =>
       console.error('Error al cargar tiempo diario:', error);
     }
   }, []);
+
+  const handleRefreshDailyTime = async () => {
+    setRefreshingTime(true);
+    try {
+      await loadDailyTotalTime();
+      message.success('Tiempo actualizado correctamente');
+    } catch (error) {
+      message.error('Error al actualizar el tiempo');
+      console.error('Error:', error);
+    } finally {
+      setRefreshingTime(false);
+    }
+  };
 
   const loadProjects = useCallback(async () => {
     try {
@@ -168,21 +182,38 @@ const TimeClient: React.FC<TimeClientProps> = ({ projects: initialProjects }) =>
           }}
           bodyStyle={{ padding: '24px' }}
         >
-          <Statistic
-            title={
-              <span style={{ color: '#ffffff', fontSize: 14, fontWeight: 500 }}>
-                Tiempo trabajado hoy
-              </span>
-            }
-            value={dailyTime}
-            prefix={<ClockCircleOutlined style={{ color: '#ffffff' }} />}
-            valueStyle={{ 
-              color: '#ffffff', 
-              fontSize: 32, 
-              fontWeight: 700,
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}
-          />
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+            <Statistic
+              title={
+                <span style={{ color: '#ffffff', fontSize: 14, fontWeight: 500 }}>
+                  Tiempo trabajado hoy
+                </span>
+              }
+              value={dailyTime}
+              prefix={<ClockCircleOutlined style={{ color: '#ffffff' }} />}
+              valueStyle={{ 
+                color: '#ffffff', 
+                fontSize: 32, 
+                fontWeight: 700,
+                textShadow: '0 2px 4px rgba(0,0,0,0.1)'
+              }}
+            />
+            <Button
+              type="default"
+              icon={<ReloadOutlined spin={refreshingTime} />}
+              onClick={handleRefreshDailyTime}
+              loading={refreshingTime}
+              style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+                color: '#ffffff',
+                fontWeight: 500,
+                backdropFilter: 'blur(10px)'
+              }}
+            >
+              Actualizar
+            </Button>
+          </div>
         </Card>
 
         <div style={{ 

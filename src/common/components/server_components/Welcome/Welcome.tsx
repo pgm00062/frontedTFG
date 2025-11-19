@@ -32,9 +32,6 @@ export default async function WelcomeServer() {
     if (userData) {
       // Pasamos una previsualización con campos mínimos necesarios para la tarjeta
       userPreview = { id: userData.id, name: userData.name, surname: userData.surname, email: userData.email, dni: userData.dni }
-      console.log('✅ userPreview creado:', userPreview);
-    } else {
-      console.log('❌ No se obtuvo userData');
     }
 
     // Obtener los últimos tres proyectos del usuario (optimizado para preview)
@@ -44,8 +41,6 @@ export default async function WelcomeServer() {
       token: authHeader || undefined,
       headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
     }) as any
-
-    console.log('📊 Últimos tres proyectos recibidos:', projectsData);
 
     if (projectsData && Array.isArray(projectsData)) {
       // getLastThreeProjects devuelve directamente un array, no paginado
@@ -59,9 +54,6 @@ export default async function WelcomeServer() {
         description: project.description || '',
         status: project.status
       }));
-      console.log('✅ projectsPreview creado:', projectsPreview);
-    } else {
-      console.log('❌ No se obtuvieron proyectos o el formato no es el esperado');
     }
 
     // Crear datos de estadísticas de ejemplo basados en los proyectos
@@ -104,26 +96,19 @@ export default async function WelcomeServer() {
           status: invoice.status || 'PENDIENTE',
           projectName: invoice.projectName || invoice.project?.name
         }));
-        console.log('✅ invoicesPreview creado:', invoicesPreview);
       }
     } catch (e) {
-      console.log('❌ No se pudieron obtener facturas para preview:', e);
       invoicesPreview = [];
     }
 
     // Obtener preview de tiempo (últimas 3 sesiones)
     try {
-      console.log('🔍 Intentando obtener listTimeSessions...');
       const timeData = await Service.getCases('listTimeSessions', {
         signal: abort.signal,
         endPointData: {},
         token: authHeader || undefined,
         headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
       }) as any
-
-      console.log('📦 timeData recibido del backend:', timeData);
-      console.log('📦 tipo de timeData:', typeof timeData);
-      console.log('📦 es array?:', Array.isArray(timeData));
 
       if (timeData && Array.isArray(timeData)) {
         // Tomar solo las primeras 3 sesiones
@@ -135,13 +120,8 @@ export default async function WelcomeServer() {
           status: entry.status || 'FINALIZADO',
           startTime: entry.startTime
         }));
-        console.log('✅ timePreview creado:', timePreview);
-      } else {
-        console.log('⚠️ timeData no es un array válido');
       }
     } catch (e) {
-      console.log('❌ Error al obtener registros de tiempo para preview:', e);
-      console.error('❌ Error completo:', e);
       timePreview = [];
     }
 
@@ -161,10 +141,8 @@ export default async function WelcomeServer() {
         const hours = Math.floor(dailyTime.totalHours || 0);
         const minutes = (dailyTime.totalMinutes || 0) % 60;
         dailyTotalTime = `${hours}h ${minutes}m`;
-        console.log('✅ dailyTotalTime creado:', dailyTotalTime);
       }
     } catch (e) {
-      console.log('❌ No se pudo obtener el tiempo total del día:', e);
       dailyTotalTime = '0h 0m';
     }
   } catch (e) {

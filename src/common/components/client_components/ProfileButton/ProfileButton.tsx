@@ -11,8 +11,8 @@ export default function ProfileButton() {
   const handleLogout = () => {
     // Limpiar el localStorage o cookies si es necesario
     localStorage.removeItem('token')
-    // Redirigir a la pantalla de login/registro
-    router.push('/register-login')
+    // Redirigir a la página de inicio (login/registro)
+    router.push('/')
   }
 
   const handleProfile = () => {

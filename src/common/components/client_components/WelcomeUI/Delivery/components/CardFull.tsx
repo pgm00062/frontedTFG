@@ -16,8 +16,6 @@ const icons: Record<string, React.ReactNode> = {
 };
 
 export default function CardFull({ className, title, icon, onToggle, expanded, href, userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview, dailyTotalTime }: Readonly<Props>) {
-  console.log(`🎯 CardFull "${title}" recibió:`, { userPreview, projectsPreview, statisticsPreview, invoicesPreview, timePreview, dailyTotalTime });
-  
   const ref = useRef<HTMLButtonElement | null>(null);
   const [dimsStyle, setDimsStyle] = useState<Record<string, string>>({});
   const router = useRouter();
@@ -75,30 +73,30 @@ export default function CardFull({ className, title, icon, onToggle, expanded, h
       </div>
       
       {/* Previsualización de facturas - solo en la tarjeta de facturas */}
-      {invoicesPreview && title === 'Facturas' && (
+      {title === 'Facturas' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <InvoicesMiniPreview invoices={invoicesPreview} />
+          <InvoicesMiniPreview invoices={invoicesPreview || []} />
         </div>
       )}
       
       {/* Previsualización de proyectos - solo en la tarjeta de proyectos */}
-      {projectsPreview && title === 'Proyectos' && (
+      {title === 'Proyectos' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <ProjectsMiniPreview projects={projectsPreview} />
+          <ProjectsMiniPreview projects={projectsPreview || []} />
         </div>
       )}
       
       {/* Previsualización de estadísticas - solo en la tarjeta de estadísticas */}
-      {statisticsPreview && title === 'Estadisticas' && (
+      {title === 'Estadisticas' && statisticsPreview && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
           <StatisticsMiniPreview statisticsData={statisticsPreview} />
         </div>
       )}
       
       {/* Previsualización de tiempo - solo en la tarjeta de tiempo */}
-      {timePreview && title === 'Tiempo' && (
+      {title === 'Tiempo' && (
         <div style={{ margin: '16px 0', display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100%' }}>
-          <TimeMiniPreview timeEntries={timePreview} dailyTotalTime={dailyTotalTime} />
+          <TimeMiniPreview timeEntries={timePreview || []} dailyTotalTime={dailyTotalTime} />
         </div>
       )}
       

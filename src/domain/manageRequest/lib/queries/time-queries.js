@@ -27,5 +27,5 @@ export const TIME_ERROR_MESSAGES = {
   listTimeSessions: 'Error al obtener las sesiones de tiempo',
   pauseTime: 'Error al pausar el tiempo',
   resumeTime: 'Error al reanudar el tiempo',
-  totalTimeDay: 'Error al obtener el tiempo total del día'
+  getTotalTimeDay: 'Error al obtener el tiempo total del día'
 };
