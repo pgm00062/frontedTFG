@@ -87,49 +87,6 @@ const InvoiceUseCases = {
         );
     },
 
-    deleteInvoice: async (signal, values, token, headers) => {
-        // Custom handler for deleteInvoice with ID in URL
-        const id = values;
-        
-        try {
-            const fetchConfig = {
-                signal,
-                method: 'DELETE',
-                cache: 'no-store',
-                headers: {
-                    'Content-Type': 'application/json',
-                    ...(token
-                        ? (() => {
-                            const headerToken = token.startsWith('Bearer ')
-                                ? token
-                                : `Bearer ${token}`;
-                            return {
-                                Authorization: headerToken,
-                            };
-                        })()
-                        : {}),
-                    ...headers,
-                },
-                credentials: 'include',
-            };
-
-            const url = `${API_BASE_URL}/invoices/delete/${id}`;
-            const response = await fetch(url, fetchConfig);
-
-            if (!response.ok) {
-                console.error('[FETCH_ERROR]', response);
-                const text = await response.text();
-                throw new Error(`Error al eliminar la factura: ${response.status} ${text}`);
-            }
-
-            // Para DELETE que retorna 204, no hay contenido
-            return { success: true };
-        } catch (error) {
-            console.error('[deleteInvoice] error:', error);
-            throw error;
-        }
-    },
-
 };
 
 export default InvoiceUseCases;

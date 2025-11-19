@@ -73,14 +73,6 @@ export interface InvoiceDetailsModalProps {
   invoice: InvoiceItem | null;
   onCancel: () => void;
   onSuccess: () => void;
-  onDelete: () => void;
-}
-
-export interface DeleteInvoiceModalProps {
-  visible: boolean;
-  invoice: InvoiceItem | null;
-  onCancel: () => void;
-  onConfirm: () => void;
 }
 
 export interface InvoiceListItemProps {

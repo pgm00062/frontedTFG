@@ -19,7 +19,6 @@ import {
 import { 
   EditOutlined, 
   SaveOutlined, 
-  DeleteOutlined,
   FileTextOutlined 
 } from '@ant-design/icons'
 import type { InvoiceDetailsModalProps } from '../interface'
@@ -48,8 +47,7 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
   visible,
   invoice,
   onCancel,
-  onSuccess,
-  onDelete
+  onSuccess
 }) => {
   const [form] = Form.useForm()
   const [loading, setLoading] = useState(false)
@@ -139,36 +137,31 @@ const InvoiceDetailsModal: React.FC<InvoiceDetailsModalProps> = ({
       open={visible}
       onCancel={handleClose}
       width={900}
-      footer={[
-        <Button key="delete" danger icon={<DeleteOutlined />} onClick={onDelete}>
-          Eliminar
-        </Button>,
-        <div key="right-buttons" style={{ flex: 1, textAlign: 'right' }}>
-          {isEditing ? (
-            <Space>
-              <Button onClick={handleCancelEdit}>
-                Cancelar
-              </Button>
-              <Button
-                type="primary"
-                icon={<SaveOutlined />}
-                loading={loading}
-                onClick={handleUpdate}
-              >
-                Guardar Cambios
-              </Button>
-            </Space>
-          ) : (
+      footer={
+        isEditing ? (
+          <Space>
+            <Button onClick={handleCancelEdit}>
+              Cancelar
+            </Button>
             <Button
               type="primary"
-              icon={<EditOutlined />}
-              onClick={handleEdit}
+              icon={<SaveOutlined />}
+              loading={loading}
+              onClick={handleUpdate}
             >
-              Editar
+              Guardar Cambios
             </Button>
-          )}
-        </div>
-      ]}
+          </Space>
+        ) : (
+          <Button
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={handleEdit}
+          >
+            Editar
+          </Button>
+        )
+      }
     >
       <Form
         form={form}

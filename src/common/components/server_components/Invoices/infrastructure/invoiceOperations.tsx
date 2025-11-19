@@ -77,20 +77,4 @@ export async function updateInvoice(invoiceId: number, invoiceData: Record<strin
   return (raw as any)?.backendBody ?? raw
 }
 
-/**
- * Elimina una factura
- */
-export async function deleteInvoice(invoiceId: number): Promise<any> {
-  const cookieStore = cookies()
-  const jsession = cookieStore.get('JSESSIONID')?.value
-  const authToken = cookieStore.get('AUTH_TOKEN')?.value
-  const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken
 
-  const raw = await Service.getCases('deleteInvoice', {
-    endPointData: { id: invoiceId },
-    token: authHeader || undefined,
-    headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
-  })
-
-  return (raw as any)?.backendBody ?? raw
-}

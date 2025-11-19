@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button, message, Spin } from 'antd'
 import { PlusOutlined, FileTextOutlined } from '@ant-design/icons'
 import type { InvoicesClientProps, InvoiceItem } from './interface'
-import { InvoicesList, CreateInvoiceModal, InvoiceDetailsModal, DeleteInvoiceModal } from './index'
+import { InvoicesList, CreateInvoiceModal, InvoiceDetailsModal } from './index'
 import { listInvoicesAction } from '../../../server_components/Invoices/infrastructure/invoiceActions'
 
 const InvoicesClient: React.FC<InvoicesClientProps> = ({ initialInvoices, projects = [] }) => {
@@ -14,7 +14,6 @@ const InvoicesClient: React.FC<InvoicesClientProps> = ({ initialInvoices, projec
   const [loading, setLoading] = useState(false)
   const [createModalVisible, setCreateModalVisible] = useState(false)
   const [detailsModalVisible, setDetailsModalVisible] = useState(false)
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<InvoiceItem | null>(null)
 
   const handleCreateInvoice = () => {
@@ -40,13 +39,7 @@ const InvoicesClient: React.FC<InvoicesClientProps> = ({ initialInvoices, projec
     refreshInvoices()
   }
 
-  const handleDeleteSuccess = () => {
-    setDeleteModalVisible(false)
-    setDetailsModalVisible(false)
-    message.success('Factura eliminada exitosamente')
-    // Recargar la lista de facturas
-    refreshInvoices()
-  }
+
 
   const refreshInvoices = async () => {
     setLoading(true)
@@ -65,10 +58,7 @@ const InvoicesClient: React.FC<InvoicesClientProps> = ({ initialInvoices, projec
     }
   }
 
-  const handleDeleteInvoice = () => {
-    setDetailsModalVisible(false)
-    setDeleteModalVisible(true)
-  }
+
 
   return (
     <div style={{ padding: '0 24px 24px' }}>
@@ -142,14 +132,6 @@ const InvoicesClient: React.FC<InvoicesClientProps> = ({ initialInvoices, projec
         invoice={selectedInvoice}
         onCancel={() => setDetailsModalVisible(false)}
         onSuccess={handleUpdateSuccess}
-        onDelete={handleDeleteInvoice}
-      />
-
-      <DeleteInvoiceModal
-        visible={deleteModalVisible}
-        invoice={selectedInvoice}
-        onCancel={() => setDeleteModalVisible(false)}
-        onConfirm={handleDeleteSuccess}
       />
     </div>
   )

@@ -10,8 +10,5 @@ export const INVOICE_METHODS = {
     },
     getInvoice: (response) => {
         return response.data;
-    },
-    deleteInvoice: (response) => {
-        return response.data;
     }
 };

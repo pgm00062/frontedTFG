@@ -62,35 +62,6 @@ export async function updateInvoiceAction(invoiceId: number, formData: any) {
 }
 
 /**
- * Server Action para eliminar una factura
- */
-export async function deleteInvoiceAction(invoiceId: number) {
-  try {
-    const cookieStore = cookies()
-    const jsession = cookieStore.get('JSESSIONID')?.value
-    const authToken = cookieStore.get('AUTH_TOKEN')?.value
-    const authHeader = authToken && !authToken.startsWith('Bearer ') ? `Bearer ${authToken}` : authToken
-
-    const result = await Service.getCases('deleteInvoice', {
-      endPointData: invoiceId,
-      token: authHeader || undefined,
-      headers: jsession ? { Cookie: `JSESSIONID=${jsession}` } : undefined,
-    })
-
-    return {
-      success: true,
-      data: result
-    }
-  } catch (error) {
-    console.error('Error deleting invoice:', error)
-    return {
-      success: false,
-      error: 'Error al eliminar la factura'
-    }
-  }
-}
-
-/**
  * Server Action para obtener una factura por ID
  */
 export async function getInvoiceAction(invoiceId: number) {
